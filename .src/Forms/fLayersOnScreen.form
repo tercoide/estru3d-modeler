@@ -1,0 +1,17 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,53,64)
+  Border = False
+  AutoResize = True
+  { !tbvLayers TableView
+    MoveScaled(0,0,39,54)
+    #Public = True
+    Tracking = True
+    Border = False
+    Grid = False
+    ScrollBar = Scroll.Vertical
+    AutoResize = False
+    Resizable = False
+  }
+}

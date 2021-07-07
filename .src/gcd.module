@@ -1,0 +1,1285 @@
+' Gambas module file
+
+' Tool maintained by Terco
+' PlantDesigner
+' Software para diseño de plantas tipo de hormigon
+'
+' Copyright (C) Ing Martin P Cristia
+'
+' This program is free software; you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation; either version 2 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program; if not, write to the Free Software
+' Foundation, Inc., 51 Franklin St, Fifth Floor,
+' Boston, MA  02110-1301  USA
+' Gambas class file
+
+' Credits
+' --------
+' Icon design por Trinh Ho ,Good Ware, freepik get them at https://www.flaticon.es
+' Based on an example called MuchosCirculos by JGuardon y MrShell
+' XML Load/Save by Tincho
+
+Public PrintingScale As Float '' This is needed by some clases, like Text and MText.
+Public ScreenDensity As Float = 1080 / 29.5  '' pixele by cm wich gives a 1:100 scale in my monitor
+
+' Filtros del dibujo
+Public DrawOriginals As Boolean = False
+Public DrawMarcados As Boolean = True
+Public DrawSoloColumnas As Boolean = False
+Public DrawBounds As Boolean = False '' ¿Para que sirve esta variable?
+
+Public ScaleLines As Float = 1              '' la uso en Inserts para evitar lineas gordas
+Public FormatoCotas As String = "0.00"
+
+Public ColorForSelected As Integer = &H70E000
+Public ToolActive As Boolean
+
+' Plants
+Public Plants As New BuildPlant[]
+Public CurrPlant As BuildPlant
+
+Public HookSize As Integer = 16                       '' for use with poi
+Public Orthogonal As Boolean = False              '' idem Ortho F8 del CAD
+Public OrthogonalForced As Boolean = False
+Public OrthogonalIgnored As Boolean = False
+Public SnapMode As Integer                      ' Bitwise: -1 Off ; 0 = Nearest; 1 = Endpoint; 2 = midpoint
+Public SnapModePrev As Integer                      ' Bitwise: -1 Off ; 0 = Nearest; 1 = Endpoint; 2 = midpoint
+Public GridMode As Integer                      ' Bitwise: -1 Off ; 0 = Nearest; 1 = Endpoint; 2 = midpoint
+Public GridModePrev As Integer                      ' Bitwise: -1 Off ; 0 = Nearest; 1 = Endpoint; 2 = midpoint
+
+Public clsJob As Object                             '' what I am doing now, thats either selecting or something else
+Public clsJobPrevious As Object                     '' what was doing before
+Public clsJobPreZoom As Object                      '' what was doing before Zooming or Panning
+Public clsJobPreviousParam As Integer               '' a param to pass to clsJob.Start( param )
+
+'Public gColor As New Integer[]
+
+Public drwDrawingClass As Integer = 0 '' 0 = Paint, 1 = OpenGL
+Public Const drwPaintClass As Integer = 2
+Public Const drwOpenGLClass As Integer = 4
+
+Public LoadingFinished As Boolean = False
+Public FontList As New String[]                     '' esto deberia estar en otro lado
+Public TextureList As New String[]                     '' esto deberia estar en otro lado
+Public FileName As String                           '' current work filename
+
+'---------------------------------------------------------------
+' Point of Interest
+Public Const poiEndPoint As Integer = 1
+Public Const poiMidPoint As Integer = 2
+Public Const poiQuadrant As Integer = 4
+Public Const poiTangent As Integer = 8
+Public Const poiCenter As Integer = 16
+Public Const poiIntersection As Integer = 32
+Public Const poiPerpendicular As Integer = 64
+Public Const poiNearest As Integer = 128
+Public Const poiBasePoint As Integer = 256
+
+' Stipple lines
+Public Const stiDashed As Integer = 1
+
+' dim types
+Public Const dimRotated As Integer = 0
+Public Const dimAligned As Integer = 1
+Public Const dimAngular As Integer = 2
+Public Const dimDiameter As Integer = 3
+Public Const dimRadius As Integer = 4
+Public Const dimAngular3point As Integer = 5
+Public Const dimOrdinate As Integer = 6
+Public Const dimHorizontal As Integer = 7
+Public Const dimVertical As Integer = 8
+
+' Entity Flags
+Public Const flgDWG_Changed As Integer = 1
+Public Const flgDWG_UnChanged As Integer = 2
+Public Const flgDWG_Deleted As Integer = 4
+Public Const flgGCD_New As Integer = 8
+'Public Const flg5 As Integer = 16
+'Public Const flg6 As Integer = 32
+'Public Const flg7 As Integer = 64
+'Public Const flg8 As Integer = 128
+'Public Const flg9 As Integer = 256
+
+'variables de ambiente
+Public flgShowInspector As Boolean = False
+Public flgSearchingEntity As Boolean = False  ' impide cuellos de botellla
+Public flgSearchingPOI As Boolean
+Public flgShowingLayers As Boolean
+Public flgNewPosition As Boolean        ' seteada cuando hay un cambio en pan o zoom
+
+Public Drawings As New Drawing[]
+Public DrawingReady As Boolean = False
+Public currentDrawing As Drawing
+
+Public gColor As New Integer[]      '' Colors list
+'Tincho
+'Vars direct or derivated from config xml
+Public flgWindowBackColor As Integer '= Color.Blac  '' Window backgrount color
+Public flgWindowTextColor As Integer   '' Window helper text color
+Public flgWindowInfoColor As Integer   '' Window helper text colorPublic flgWindowCursorColor As Integer '' Window cursor color
+Public flgWindowCursorColor As Integer   '' Window helper text color
+Public flgWhiteAndBlack As Integer     '' El color blanco/negro siempre sera distinto al
+Public flgOnScreenHelpColor As Integer = Color.LightGray    '' Tincho, esta es nueva
+
+' ' Referencias
+' Public cLayers As Collection    '' All layers data from dwg is listed here
+' Public cLtypes As Collection    '' All linetypes data from dwg is listed here
+' Public cBlocks As Collection    '' All Blocks data from dwg is listed here
+' Public cEntities As Collection  '' All Entity are here if form cEntities[handle] as Entity
+' Public cHeader As Collection    '' Header data
+
+' Vars for entities edition
+Public arrUndo As New Entity[]             '' An array to put an unmodified copy of an entity before modifying it and then restoring it to the previous version.
+
+Public MainGLArea As Control  ' this is for m-designer compatibility and point to main form GLArea
+
+Public UseCairo As Boolean = False
+
+'' Transfer layers to main windows ComboBox
+Public Sub UpdateLayersCombo()
+
+    Dim i As Integer
+    Dim sName As String = "_menuLay"
+    Dim mLayer As New Menu(fMain), m2 As Menu
+    Dim aLayer As Layer
+
+    For i = 0 To fMain.Menus.Count - 1
+        If fMain.Menus[i].Name = sName Then
+            fMain.Menus[i].Delete
+            Break
+        End If
+    Next
+    mLayer.Name = sName
+    For Each aLayer In currentDrawing.oLayers
+        m2 = New Menu(mLayer)
+        m2.Text = aLayer.Name
+        m2.Picture = paintPlus.picCirculito(8, GetGBColor(aLayer.Colour), Color.ButtonForeground)
+        m2.Action = "layer_change_" & aLayer.Name
+    Next
+    ' fMain.mbtLayers.Menu = sName
+    ' fMain.mbtLayers.Text = mLayer.Children[0].Text
+    ' fMain.mbtLayers.Picture = mLayer.Children[0].Picture
+    aLayer = gcd.currentDrawing.oLayers[gcd.currentDrawing.oLayers.First]
+    fMain.grdLayers[0.0, 0.0].Picture = mLayer.Children[0].Picture
+    fMain.grdLayers[0, 4].Text = aLayer.Name
+    fMain.grdLayers[0, 1].Picture = IIf(aLayer.Visible, fLayersOnScreen.picVisibleOn, fLayersOnScreen.picVisibleOff)
+    fMain.grdLayers[0, 2].Picture = IIf(aLayer.Frozen, fLayersOnScreen.picFrozenOn, fLayersOnScreen.picFrozenOff)
+    fMain.grdLayers[0, 3].Picture = IIf(aLayer.Locked, fLayersOnScreen.picLockedOn, fLayersOnScreen.picLockedOff)
+
+    ' fMain.tbnLayersOnScreen.Picture = paintPlus.picTexto(gcd.currentDrawing.arrLayers.First.Name, fMain.Font.H, fMain.tbnLayersOnScreen.w, fMain.tbnLayersOnScreen.h, Color.ButtonForeground, Color.ButtonBackground, Align.Left)
+
+    If Not currentDrawing.CurrLayer Then currentDrawing.CurrLayer = aLayer
+    Return
+
+End
+
+'' Should be called after updating layers
+Public Sub UpdateLineWtCombo()
+
+    Dim imagen As Image
+    Dim Xc, Yc As Integer
+    Dim LW As Float
+    Dim f As Float
+
+    ' lo vacio
+
+    fMain.tblLineWt.tbnChilds.Clear
+
+    ' primero agregamos la correspondiente a ByLayer
+    imagen = New Image(fMain.tblLineWt.w * 0.9, fMain.tblLineWt.h * 0.9, fMain.tblLineWt.Background)
+
+    Paint.Begin(imagen)
+    '  +------------------------------------+
+    '  +   ---------------------  0.00mm    +
+    '  +------------------------------------+
+    Paint.MoveTo(0, imagen.h / 2)
+    lw = currentDrawing.CurrLayer.LineWt '][dxf.codLWht] / 100 * 3
+    Paint.LineWidth = lw
+    If Paint.LineWidth < 1 Then Paint.LineWidth = 1
+    Paint.RelLineTo(imagen.w / 2, 0)
+    Paint.Stroke
+    Paint.MoveTo(imagen.w / 10 * 5.5, imagen.h * 0.1)
+    Paint.LineWidth = 1
+    Paint.Text("ByLayer",,,, imagen.h * 0.6, Align.Left)
+    Paint.Fill
+    Paint.End
+
+    fMain.tblLineWt.AddToolButton("tbnLineWtByLayer",, imagen.Picture, "linewt_change_" & CStr(lw * 100))
+
+    ' ahora espesores especificos
+    For f = 0.1 To 1.2 Step 0.1
+        ' primero agregamos la correspondiente a ByLayer
+        imagen = New Image(fMain.tblLineWt.w * 0.9, fMain.tblLineWt.h * 0.9, fMain.tblLineWt.Background)
+
+        Paint.Begin(imagen)
+        Paint.AntiAlias = True
+        '  +------------------------------------+
+        '  +   ---------------------  0.00mm    +
+        '  +------------------------------------+
+        Paint.MoveTo(0, imagen.h / 2)
+        lw = f * 3
+        Paint.LineWidth = lw
+        If Paint.LineWidth < 1 Then Paint.LineWidth = 1
+        Paint.RelLineTo(imagen.w / 2, 0)
+        Paint.Stroke
+        Paint.MoveTo(imagen.w / 10 * 5.5, imagen.h * 0.1)
+        Paint.LineWidth = 1
+        Paint.Text(Format(f, "0.00mm"),,,, imagen.h * 0.6, Align.Left)
+        Paint.Fill
+        Paint.End
+
+        fMain.tblLineWt.AddToolButton("tbnLineWt" & CStr(f),, imagen.Picture, "linewt_change_" & CStr(lw * 100))
+
+    Next
+
+    '   test id[mm]
+    ' # ¡DIV/0!	0	0
+    ' 0, 05 1 0, 05
+    ' 0, 09 2 0, 09
+    ' 0, 1 3 0, 1
+    ' 0, 13 4 0, 13
+    ' 0, 15 5 0, 15
+    ' 0, 18 6 0, 18
+    ' 0, 2 7 0, 2
+    ' 0, 25 8 0, 25
+    ' 0, 3 9 0, 3
+    ' 0, 35 10 0, 35
+    ' 0, 4 11 0, 4
+    ' 0, 45 12 0, 45
+    ' 0, 5 13 0, 5
+    ' 0, 53 14 0, 53
+    ' 0, 6 15 0, 6
+    ' 0, 65 16 0, 65
+    ' 0, 7 17 0, 7
+    ' 0, 8 18 0, 8
+    ' 0, 9 19 0, 9
+    ' 1 20 1
+    ' 0, 4761904761905 21 1, 06
+    ' 0, 9090909090909 22 1, 2
+    ' 1, 304347826087 23 1, 4
+    ' 1, 6666666666667 24 1, 58
+    ' 2 25 2
+    ' 	26 2, 11
+    ' 	27
+    ' 	28
+    ' ByLayer 29
+    ' ByBlock 30
+    ' Default 31
+
+End
+
+Public Sub UpdateLineTypeCombo()
+
+    ' se define en DXF con los codigos:
+    ' 40 = largo total por tramo ( = suma de Abs(code 49) )
+    ' 73 = numero de elementos (linea,espacio, punto) = 0 si es continua
+    ' 49 = largo de cada elemento: 0 = dot, negativo = espacio, positivo = linea
+    Dim imagen As Image
+    Dim Xc, Yc, i, trame, TotalTrames As Integer
+    Dim LW As Float
+    Dim lty As LType
+    Dim f As Float
+
+    '  +------------------------------------+
+    '  + Phantom                            +
+    '  + -- - -- - -- - -- - -- - -- - --   +
+    '  +------------------------------------+
+
+    fMain.tblLTypes.tbnChilds.Clear
+
+    ' ahora espesores especificos
+    For Each lty In currentDrawing.oLTYpes
+        Inc i
+
+        ' primero agregamos la correspondiente a ByLayer
+        imagen = New Image(fMain.tblLTypes.w * 0.9, fMain.tblLTypes.h * 0.9, fMain.tblLTypes.Background)
+
+        Paint.Begin(imagen)
+        Paint.AntiAlias = True
+        Paint.MoveTo(0, imagen.h * 0.8)
+        Paint.LineWidth = 1
+        Paint.Dash = lty.TrameLength
+        Paint.RelLineTo(imagen.w, 0)
+        Paint.Stroke
+        Paint.Dash = Null
+        ' Texto
+        Paint.MoveTo(0, 0)
+        Paint.LineWidth = 1
+        Paint.Text(lty.Name,,,, imagen.h * 0.5, Align.topLeft)
+        Paint.Fill
+        Paint.End
+
+        fMain.tblLTypes.AddToolButton("tbnLType" & CStr(i),, imagen.Picture, "ltype_change_" & lty.Name)
+
+    Next
+    gcd.currentDrawing.CurrLineType = currentDrawing.oLTYpes[currentDrawing.oLTYpes.First]
+
+End
+
+Public Function UpdatDimTypeTypeCombo()
+
+    Dim cDimStyle As Collection
+    Dim i As Integer
+
+    If IsNull(gcd.currentDrawing.CurrDimStyle) Then gcd.currentDrawing.CurrDimStyle = gcd.currentDrawing.oStyles[gcd.currentDrawing.oStyles.First]
+    fMain.cmbDimStyle.Clear
+    For Each cDimStyle In gcd.currentDrawing.cModel["TABLES"]["DIMSTYLE"]
+        fMain.cmbDimStyle.Add(cDimStyle[dxf.codName])
+
+        If gcd.currentDrawing.CurrDimStyle.name = cDimStyle[dxf.codName] Then i = fMain.cmbDimStyle.Count
+    Next
+    If i = 0 Then i = 1
+    fMain.cmbDimStyle.Index = i - 1
+
+End
+
+Public Function FindStyle(sName As String) As Styles
+
+    Dim st As Styles
+
+    For Each st In gcd.currentDrawing.oStyles
+
+        If st.Name = sname Then Return st
+
+    Next
+
+    Return Null
+
+End
+
+Public Function FindStyleByHandle(sHandle As String) As Styles
+
+    Dim st As Styles
+
+    For Each st In gcd.currentDrawing.oStyles
+
+        If st.handle = sHandle Then Return st
+
+    Next
+
+    Return Null 'gcd.currentDrawing.arrStyles.First
+
+End
+
+Public Function FindEntity(sHandle As String, Optional SearchInBlocks As Boolean = False) As Entity
+
+    Dim i, oBlock As Block
+
+    If gcd.currentDrawing.oEntities.Exist(sHandle) Then Return gcd.currentDrawing.oEntities[sHandle]
+
+    If SearchInBlocks Then
+        For Each oBlock In gcd.currentDrawing.oBlocks
+            If oBlock.entities.Exist(sHandle) Then Return gcd.currentDrawing.oEntities[sHandle]
+
+        Next
+    Endif
+
+    Return Null
+
+End
+
+Public Function FindLType(sName As String) As LType
+
+    Dim LT As LType
+
+    For Each LT In gcd.currentDrawing.oLTYpes
+
+        If LCase(LT.Name) = LCase(sname) Then Return LT
+
+    Next
+
+    Return Null
+
+End
+
+Public Function FindLtIndex(sName As String) As Integer
+
+    Dim i As Integer
+
+    For i = 0 To gcd.currentDrawing.arrLTYpes.Max
+
+        If LCase(gcd.currentDrawing.arrLTYpes[i].Name) = LCase(sname) Then Return i
+
+    Next
+
+    Return -1
+
+End
+
+Public Function FindLaIndex(sName As String) As Integer
+
+    Dim i As Integer
+
+    For i = 0 To gcd.currentDrawing.arrLayers.Max
+
+        If gcd.currentDrawing.arrLayers[i].Name = sname Then Return i
+
+    Next
+
+    Return -1
+
+End
+
+Public Function iCadColor(sColor As String) As Integer
+
+    sColor = LCase(sColor)
+    If sColor = "bylayer" Then Return 256
+    If sColor = "byblock" Then Return 257
+    If sColor = "byobject" Then Return 258
+    Try Return CInt(sColor)
+    Return 0
+
+End
+
+Public Function Metros(l As Integer) As Float
+
+    Return fMain.Metros(l)
+
+End
+
+'' Changes the properties of the seleccted entities with given values
+Public Function EditEntities(sProperty As String, vValue As Variant, Optional DoRegen As Boolean = True) As Boolean
+
+    Dim i As Integer
+    Dim e As Entity
+
+    gcd.currentDrawing.uUndo.OpenUndoStage(sProperty, Undo.TypeModify)
+
+    For Each e In currentDrawing.oSelected
+        gcd.currentDrawing.uUndo.AddUndoItem(clsEntities.ClonEntity(e, False))
+        Select Case sProperty
+
+            Case "color"
+                e.colour = vValue
+
+            Case "linewt"
+                e.LineWidth = vValue
+            Case "layer"
+                e.pLayer = vValue
+            Case "linetype"
+                e.LineType = vValue
+
+        End Select
+    Next
+
+    gcd.currentDrawing.uUndo.CloseUndoStage()
+    If DoRegen Then Regen
+
+End
+
+Public Sub Main()
+
+    MainGLArea = fmain.GLArea1
+
+    Select flgWindowBackColor
+        Case Color.Black
+            'Case &1B2224
+            flgWhiteAndBlack = Color.White
+
+        Case Else
+            flgWhiteAndBlack = Color.Black
+
+    End Select
+
+    'If WindowBackColor = 0 Then WhiteAndBlack = Color.White Else WhiteAndBlack = Color.Black
+    ' ' armo el array de colores
+    ' gcolor = DecodeColor()
+    '
+
+    ' this is what we are doing now
+    clsJob = cadSelection
+    clsJob.start()
+    clsJobPrevious = cadSelection
+    clsJobPreZoom = cadSelection
+    clsJobPreviousParam = 0
+
+    'FileName = User.Home &/ "autosaveV5.xml"
+
+    FontList = glPlus.LoadFonts(Application.Path &/ "fonts/lff")
+    'FontList = glPlus.LoadFonts(gcd.sFonts)
+    glPlus.SelectFont("romand")
+
+    texturelist = glPlus.LoadTextures(Application.Path &/ "textures")
+    'texturelist = glPlus.LoadTextures(gcd.sTextures)
+
+End
+
+Public Sub ExportBlocks(colData As Collection) ', obxEntities As Entity[]) As Integer
+
+End
+
+Public Sub ImportBlocksFromDXF(colData As Collection) ', obxEntities As Entity[]) As Integer
+
+    Dim iTotalEntities As Integer, colent, colBlk As Collection, flxPoints As New Float[], P As Float[]
+    Dim hBlock As String
+    Dim cParent As Collection, cEntyList As New Collection
+    Dim hEnty As Variant, iEnty As Integer
+    Dim cEnty As Variant[]
+    Dim i As Integer
+
+    If Not colData.Exist("BLOCKS") Then Return
+    ' For Each colBlk In colData["TABLES"]["BLOCK_RECORD"]
+    '     Dim newBlock As New Block
+    '     newBlock.entities = New Collection
+    '     newBlock.name = colBlk[dxf.codName]
+    '     newBlock.handle = colBlk[dxf.codHandle]
+    '     newBlock.HandleOwnerParent = colBlk[dxf.codHandleOwner]
+    '     newBlock.HandleAsociatedLayout = colBlk["340"]
+    '     Try newBlock.InsertUnits = colBlk["70"]
+    '     Try newBlock.Explotability = colBlk["280"]
+    '     Try newBlock.Scalability = colBlk["281"]
+    '     gcd.currentDrawing.oBlocks.Add(newBlock, newBlock.handle)
+    '
+    ' Next
+
+    For Each colBlk In colData["BLOCKS"]
+        Dim newBlock As New Block
+        newBlock.entities = New Collection
+        newBlock.name = colBlk[dxf.codName]
+        cParent = colData["TABLES"]["BLOCK_RECORD"][newBlock.name]
+        newBlock.handle = colBlk[dxf.codHandle]
+        newBlock.HandleOwner = cParent[dxf.codHandle]
+        newBlock.HandleOwnerParent = cParent[dxf.codHandleOwner]
+        'newBlock = clsEntities.FIndBlock(colBlk[dxf.codName])
+        newBlock.layer = colBlk[dxf.codLayer]
+        newBlock.x0 = colBlk[dxf.codX0]
+        newBlock.y0 = colBlk[dxf.codY0]
+        If colBlk.Exist(dxf.codZ0) Then newBlock.z0 = colBlk[dxf.codZ0]
+        newBlock.flags = colBlk["70"]
+        gcd.currentDrawing.oBlocks.Add(newBlock, newBlock.handle)
+
+    Next
+    For Each colBlk In colData["BLOCKS"]
+
+        If colBlk.Exist("entities") Then
+
+            DXFtoEntity(colBlk["entities"], gcd.currentDrawing.oBlocks[colBlk[dxf.codHandle]].entities)
+            'If gcd.currentDrawing.arrBlocks[i].entities.Count = 0 Then Stop
+
+        Else
+
+            Debug "Error loading block", newBlock.name
+
+        End If
+        Inc i
+
+    Next
+
+End
+
+'' Importa las cosas de manera descentralizada
+Public Sub DXFtoEntity(cEny As Collection, obx As Collection, Optional NewHandles As Boolean = True)
+
+    Dim e As Collection               ' current Entity
+    Dim entNueva As Entity
+    Dim flgIsPolyline, IsDummy As Boolean
+    Dim pBlockPolyline As Block
+    Dim sHandle As String
+
+    For Each e In cEny                                              ' Para cada Coleccion de datos de vrx
+        If e.Exist(dxf.codEntity) Then                                     ' es una entidad?
+            ' entonces, creamos una nueva
+            ' poner en minuscula para anular la entidad
+            If InStr("HATCH POLYLINE ENDBLK SEQEND VERTEX POINT ATTDEF ATTRIB LINE LWPOLYLINE CIRCLE ELLIPSE ARC TEXT MTEXT SPLINE SOLID INSERT DIMENSION DIMENSION_LINEAR DIMENSION_DIAMETEr DIMENSION_RADIUs DIMENSION_ANG3Pt DIMENSION_ALIGNED DIMENSION_ORDINATE LARGE_RADIAL_DIMENSION ARC_DIMENSION", UCase(e[dxf.codEntity])) = 0 Then IsDummy = True Else IsDummy = False
+            'If UCase(e[dxf.codEntity]) = "INSERT" Then Stop
+
+            entNueva = clsEntities.DXFImportToEntity(e, IsDummy)
+            If IsDummy Then
+                ' no esta implementada
+                Print "Entidad no implementada o con errores:", e[dxf.codHandle], e[dxf.codEntity]
+
+            Else
+
+                If Not IsNull(entNueva) Then         ' si esta implementada, llenamos los datos
+                    If NewHandles Or (entNueva.Handle = "") Then
+                        sHandle = Me.NewHandle()
+                        entNueva.Handle = sHandle
+                    Else
+                        sHandle = entNueva.Handle
+                    End If
+                    If flgIsPolyline Then
+                        pBlockPolyline.entities.Add(entNueva, sHandle)
+                    Else
+                        obx.Add(entNueva, sHandle)
+                    End If
+
+                    If e[dxf.codEntity] = "POLYLINE" Then
+                        flgIsPolyline = True
+                        pBlockPolyline = New Block
+                        pBlockPolyline.entities = New Collection
+                        gcd.currentDrawing.oPolyLines.Add(pBlockPolyline, entNueva.Handle)
+                        entNueva.pBlock = pBlockPolyline
+                    End If
+                    If e[dxf.codEntity] = "SEQEND" And flgIsPolyline = True Then
+                        flgIsPolyline = False
+                        pBlockPolyline = Null
+                    End If
+                    entNueva = Null                                           ' limpiamos
+
+                Endif
+            End If
+        End If
+    Next
+
+End
+
+Public Function GetLayer(LayerName As String) As Layer
+
+    Dim Lay As Layer
+
+    For Each Lay In gcd.currentDrawing.oLayers
+
+        If Lay.Name = LayerName Then Return Lay
+    Next
+    Return Null
+
+End
+
+'' Reads vars
+Public Sub ReadVars()
+
+    'gcd.currentDrawing.UCS.Add(gcd.GetHeaderValue("ucsx"))
+
+End
+
+'' Reads layers collection and puts data in oLayers
+Public Sub ReadLayers(Optional cLayers As Collection)
+
+    Dim hLay As Layer, cLayData As Collection
+
+    If Not cLayers Then cLayData = gcd.currentDrawing.cModel["TABLES"]["LAYER"]
+    ' primero eliminamos lo q haya
+    currentDrawing.oLayers.Clear
+    For Each cLay As Collection In cLayData
+        hLay = New Layer
+        hLay.Name = cLay[dxf.codName]
+        hLay.Visible = CInt(cLay[dxf.codColor]) >= 0
+        hLay.Colour = Abs(CInt(cLay[dxf.codColor]))
+        hLay.handle = cLay[dxf.codHandle]
+        If hLay.handle = "" Then hLay.handle = gcd.NewHandle()
+        currentDrawing.oLayers.Add(hLay, hLay.handle)
+    Next
+
+End
+
+'' Reads entities and fill arrLayers
+Public Sub FillLayers()
+
+    Dim hLay As Layer
+    Dim e As Entity
+
+    ' primero eliminamos lo q haya
+    For Each hLay In currentDrawing.oLayers
+        hLay.Entities.Clear
+    Next
+
+    For Each e In currentDrawing.oEntities
+        'e.pLayer = currentDrawing.arrLayers[gcd.FindLaIndex(e.pLayer)]
+        e.pLayer.Entities.Add(e)
+    Next
+
+End
+
+'' Reads LTypes collection and puts data in arrLTypes
+Public Sub ReadLTypes()
+
+    Dim hlty As LType
+    Dim t, i As Integer
+    Dim fTrameLength As Float
+    Dim sNextKey As String
+
+    ' primero eliminamos lo q haya
+    currentDrawing.oLTYpes.Clear
+    For Each c As Collection In currentDrawing.cLtypes
+        hlty = New LType
+        hlty.Name = c[dxf.codName]
+        hlty.Description = c["3"]
+        hlty.handle = c[dxf.codHandle]
+        If hLty.handle = "" Then hLty.handle = gcd.NewHandle()
+        hlty.nTrames = CInt(c["73"])
+        If hlty.nTrames > 0 Then hlty.Length = c["40"]
+        i = 0
+        For t = 1 To hlty.nTrames
+            Do
+                If t > 1 Then
+                    sNextKey = "49_" & CStr(i)
+                Else
+                    sNextKey = "49"
+                Endif
+                If c.Exist(sNextKey) Then
+                    Inc i
+                    hlty.TrameLength.Add(Abs(CFloat(c[sNextKey])) * 2.5) ' TODO: verificar este valor arbitrario
+                    If hlty.TrameLength.Last = 0 Then hlty.TrameLength.Last = 1
+
+                    Break
+                Endif
+                Inc i
+                If i = 1000 Then Return
+            Loop
+
+        Next
+
+        currentDrawing.oLTYpes.Add(hlty, hlty.handle)
+
+    Next
+
+End
+
+'' Reads Styles and DimStyles collection and puts data in arrStyles
+Public Sub ReadStyles()
+
+    Dim hlty As Styles
+    Dim t, i As Integer
+    Dim fTrameLength As Float
+    Dim sNextKey As String
+    Dim RefStyle As Styles
+
+    ' primero eliminamos lo q haya
+    currentDrawing.oStyles.Clear
+    ' Leo los styles de texto
+    For Each c As Collection In gcd.currentDrawing.cModel["TABLES"]["STYLE"]
+        hlty = New Styles
+
+        hlty.Name = c[dxf.codName]
+        hlty.handle = c[dxf.codHandle]
+        hlty.IsDimStyle = False
+        hlty.sFont_3 = c["3"]
+
+        hlty.FixedH_40 = CFloat(c["40"])
+
+        ' Esto no puede usarse asi, LastHeightUsed_2 es solo un dato de historial
+        ' If hlty.FixedH_40 = 0 Then hlty.FixedH_40 = CFloat(c["42"])
+
+        currentDrawing.oStyles.Add(hlty, hlty.handle)
+
+    Next
+    ' Leo lo styles de dimensiones
+    For Each c As Collection In gcd.currentDrawing.cModel["TABLES"]["DIMSTYLE"]
+        hlty = New Styles
+
+        hlty.Name = c[dxf.codName]
+        If IsNull(c[dxf.codHandle]) Then
+            hlty.handle = c["105"]
+        Else
+            hlty.handle = c[dxf.codHandle]
+        Endif
+
+        hlty.IsDimStyle = True
+
+        Try hlty.fArrowSize_41 = CFloat(c["41"])
+        If hlty.fArrowSize_41 = 0 Then hlty.fArrowSize_41 = 1
+
+        Try hlty.fTxtHeight_140 = CFloat(c["140"])
+        If hlty.fTxtHeight_140 = 0 Then hlty.fTxtHeight_140 = 1
+
+        Try hlty.iRefStyleHandle_340 = c["340"]
+
+        If hlty.iRefStyleHandle_340 <> "" Then
+            RefStyle = FindStyleByHandle(hlty.iRefStyleHandle_340)
+            If Not IsNull(RefStyle) Then
+                If RefStyle.FixedH_40 > 0 Then hlty.fTxtHeight_140 = RefStyle.FixedH_40
+                hlty.sFont_3 = RefStyle.sFont_3
+            Endif
+        Endif
+
+        currentDrawing.oStyles.Add(hlty, hlty.handle)
+
+    Next
+
+End
+
+Public Function GetGBColor(CADcolor As Integer, Optional pLayer As Layer) As Integer
+
+    ' FIXME: reparar post layers
+    'Return gcd.flgWhiteAndBlack
+    If IsNull(pLayer) Then Return gColor[CADcolor]
+    ' color
+    If CADcolor = 256 Then          ' buscar color del layer
+
+        If pLayer Then Return gColor[player.Colour]
+        Return gcd.flgWhiteAndBlack
+
+    Else If CADcolor = 257 Then     ' buscar color del objeto
+
+        Return gColor[pLayer.Colour]
+
+    Else If CADcolor = 0 Then
+        ' buscar color del bloque
+        Return gColor[pLayer.Colour]
+    Else
+
+        Return gColor[CADcolor]
+
+    Endif
+
+End
+
+Public Function UUHandleUnique(d As Drawing) As String
+
+    '5 Entity handle; text string Of up To 16 hexadecimal digits(fixed)
+    Inc d.LastHandle
+    Return Hex(d.LastHandle, 6)
+
+End
+
+' '' Devuelve un handle disponible unico para la coleccion de datos.
+' '' Basado en la variable de ambiente para el dibujo actual
+' Public Function GetNewHandle(c As Collection) As String
+'
+'   Dim i As Integer, s As String
+'
+'   i = c.Count
+'   Try i = CInt(c.Last)
+'   Do
+'     Inc i
+'     s = CStr(i) ' esto podria ser Hex
+'     If Not c.Exist(s) Then
+'       Return s
+'     Endif
+'
+'   Loop
+'
+' End
+
+'' Returns the next available handle
+Public Function NewHandle() As String
+
+    Inc currentDrawing.HandSeed             ' esta es la ultima handle utilizada, le sumo 1
+    Return Hex(currentDrawing.HandSeed)     ' devuelvo la Hex del numero
+
+End
+
+'' Updates the Graphics with the changes in the Model. Can be applied to certain entities only. Forces
+'' a Regen if specified.
+Public Function UpdateGraphics(Optional handles As String[] = [], DoRegen As Boolean = True)
+
+    Dim cEntity As Collection, entNueva As Entity
+
+    ImportBlocksFromDXF(gcd.currentDrawing.cModel)
+
+    If handles.Count = 0 Then                   ' Update all entities
+
+        gcd.DXFtoEntity(gcd.currentDrawing.cEntities, gcd.currentDrawing.oEntities, False)
+
+    Else                                        ' Update only entities with handles provided
+
+        For Each sHandle As String In handles
+
+            If gcd.currentDrawing.cEntities.Exist(sHandle) Then  ' la actualizo
+
+                entNueva = New Entity                                       ' entonces, creamos una nueva
+                If clsEntities.ImportJsonToEntity(gcd.currentDrawing.cEntities[sHandle], entNueva) Then         ' si esta implementada, llenamos los datos
+
+                    gcd.currentDrawing.arrEntities.Add(entNueva)
+                    entNueva = Null                                           ' limpiamos
+
+                Endif
+            Endif
+
+        Next
+
+    End If
+
+    gcd.FillLayers            ' esto necesita que arrLayers y arrEntities esten cargados
+    clsEntities.BuildPoi()
+
+    If DoRegen Then Regen
+
+End
+
+'' Pasa los layers de cModel a los graficos
+' Public Sub UpdateLayers()
+'
+'   Dim CMLayer As Collection
+'   Dim newlayer As Layer
+'
+'   currentDrawing.Layers.Clear
+'   For Each CMLayer In currentDrawing.cModel["LAYERS"]
+'
+'     newlayer = New Layer
+'     If TypeOf(CMLayer[dxf.codColor]) = gb.Object Then
+'       newlayer.Colour = CMLayer[dxf.codColor]["index"]
+'     Else
+'       newlayer.Colour = CMLayer[dxf.codColor]
+'     Endif
+'     newlayer.Name = CMLayer["name"]
+'     newlayer.handle = CMLayer["handle"][1]
+'     newlayer.id = newlayer.handle
+'     currentDrawing.Layers.Add(newlayer, newlayer.id)
+'   Next
+'
+' End
+
+Public Sub UpdateModel()
+
+    Dim ent As Entity
+    Dim dxfExporting As Boolean
+    Dim cNewEntity As Collection
+    Dim sNewHandle As String
+    Dim iHandle As Integer
+
+    For Each ent In currentDrawing.arrEntities
+
+        dxfExporting = False               ' Supongo que la clase todvia no esta lista
+
+        ' ' la primera verificacion que hago es ver si la entidad es de un insert, entonces no se guarda
+
+        ' Esto puede fallar en caso q no este lista, por eso el Try
+        Try dxfExporting = ent.ClassHandler.DXF_Export
+
+        If dxfExporting Then               ' La clase esta lista para crear/editar JSON
+
+            ' Verifico si la entidad ya existe en cModel, o fue creada por el usuario graficamente
+            If currentDrawing.cEntities.Exist(ent.Handle) Then
+
+                ' Ya existe, la vacio
+                cNewEntity = New Collection
+                currentDrawing.cEntities.Add(cNewEntity, ent.Handle)
+
+                ent.ClassHandler.ExportDXFCol(ent, currentDrawing.cEntities[ent.Handle])
+
+            Else
+                ' No existe, debemos crear la entrada
+                cNewEntity = New Collection
+                sNewHandle = NewHandle()
+                ' iHandle = currentDrawing.cModel["AuxHeader"]["HANDSEED"]
+                currentDrawing.cEntities.Add(cNewEntity, sNewHandle)
+                ent.Handle = sNewHandle
+
+                ent.ClassHandler.ExportDXFCol(ent, currentDrawing.cEntities[sNewHandle])
+
+            End If
+        End If
+
+    Next
+
+End
+
+Public Function iHeader(VarName As String) As Integer
+
+    Return Val("&H" & currentDrawing.cHeader[VarName][currentDrawing.cHeader[VarName].First])
+
+End
+
+Public Function GetHeaderValue(VarName As String, Optional DefValuer As Variant) As Variant
+
+    If currentDrawing.cHeader.Exist(VarName) Then
+        If currentDrawing.cHeader[VarName].count = 1 Then
+            If currentDrawing.cHeader[VarName][currentDrawing.cHeader[VarName].First].key = "70" Then
+                Return CInt(currentDrawing.cHeader[VarName][currentDrawing.cHeader[VarName].First])
+            Else If currentDrawing.cHeader[VarName][currentDrawing.cHeader[VarName].First].key = "40" Then
+                Return CFloat(currentDrawing.cHeader[VarName][currentDrawing.cHeader[VarName].First])
+            Else
+                Return currentDrawing.cHeader[VarName][currentDrawing.cHeader[VarName].First]
+            Endif
+
+        Else ' tiene mas de un elemento, Y LOS SUPONGO TODOS VARIANT
+            Dim vRet As New Variant[]
+            For Each vVar As Variant In currentDrawing.cHeader[VarName]
+                vRet.Add(vVar)
+            Next
+            Return vRet
+
+        Endif
+    Endif
+
+End
+
+Public Function ODA_DWGtoDXF(sDwgFile As String) As String
+
+    Dim str, filebase, tmpdwg, tmpdir, tmpdirdxf As String
+    Dim Steps As Integer
+
+    filebase = utils.FileFromPath(sDwgFile)
+
+    steps = 0 ' elimino el archivo temporal que hubiese creado
+
+    If Exist(main.dirDwgIn &/ filebase) Then Kill main.dirDwgIn &/ filebase
+
+    Steps = 1 ' hago una copia previa a la conversion
+    Copy sDwgFile To main.dirDwgIn &/ filebase
+
+    Steps = 2 ' Calling the converter
+    Shell "ODAFileConverter '" & main.dirDwgIn & "' '" & main.dirDxfIn & "' 'ACAD2010' 'DXF' 0 0" Wait To str
+
+    steps = 3
+    ' vacio el directorio de entrada
+    Kill main.dirDwgIn &/ filebase
+
+    Return main.dirDxfIn &/ utils.FileWithoutExtension(filebase) & ".dxf"
+
+Catch
+
+    Select Case Steps
+        Case 0
+            ' esto puede fallar por acceso denegado
+            Print ("Acces denied to temp file")
+            Return Null
+        Case 1
+            ' esto puede fallar por file corrupt
+            Print ("File corrupt")
+            Return Null
+        Case 2
+            ' esto puede fallar por diversas cuestiones
+            Print ("Conversion failed")
+            Return Null
+        Case 3
+            ' esto puede fallar por diversas cuestiones
+            Print ("Could't empty temp dir")
+            Return Null
+
+    End Select
+
+End
+
+Public Function ODA_DXFtoDWG(sDxfFile As String) As String
+
+    Dim str, filebase, tmpdxf, tmpdir, tmpdirdwg As String
+    Dim Steps As Integer
+
+    filebase = utils.FileFromPath(sDxfFile) ' deberia estar en main.dirDxfIn
+
+    steps = 0 ' elimino el archivo temporal que hubiese creado
+    If Exist(main.dirDxfOut &/ filebase) Then Kill main.dirDxfOut &/ filebase
+
+    Steps = 1 ' hago una copia previa a la conversion
+    If sDxfFile <> (main.dirDxfOut &/ filebase) Then Copy sDxfFile To main.dirDxfOut &/ filebase
+
+    Steps = 2 ' Calling the converter
+    Shell "ODAFileConverter '" & main.dirDxfOut & "' '" & main.dirDwgOut & "' 'ACAD2010' 'DWG' 0 0" Wait To str
+
+    steps = 3
+    ' vacio el directorio de entrada
+    Kill main.dirDxfOut &/ filebase
+
+    Return main.dirDwgOut &/ utils.FileWithoutExtension(filebase) & ".dwg"
+
+Catch
+
+    Select Case Steps
+        Case 0
+            ' esto puede fallar por acceso denegado
+            Print ("Acces denied to temp file")
+            Return Null
+        Case 1
+            ' esto puede fallar por file corrupt
+            Print ("File corrupt")
+            Return Null
+        Case 2
+            ' esto puede fallar por diversas cuestiones
+            Print ("Conversion failed")
+            Return Null
+        Case 3
+            ' esto puede fallar por diversas cuestiones
+            Print ("Could't empty temp dir")
+            Return Null
+
+    End Select
+
+End
+
+'' Carga un DXF e intenta dibujarlo centrado en el contenedor: DrawingArea, Picture, Image
+''          iColor: CAD color o -1 para usar como vienen en el DXF
+''          fLineWidth: -1=como vienen, 0=automatico, >0 = fijo en ese valor
+Public Function FitDxfToImage(sDXFfile As String, imgPreview As Object, Optional iColor As Integer = 0, fLineWidth As Float = 1) As Boolean
+
+    Dim cModelPreview As Collection
+    Dim entyBlock As New Collection
+    Dim scaleX, scale, scaleY As Float
+    Dim entScale As Float
+    Dim entidad As Entity
+    Dim sFActor As Float = 1.5
+    Dim flxLimits As New Float[]
+
+    If Not Exist(sDxfFile) Then Return False
+    'imgPreview = New Image(80, 80, Color.Black)
+    cModelPreview = New Collection
+    entyBlock.Clear
+    entyBlock = New Collection
+    Dxf.LoadFile(sDxfFile, cModelPreview, True, False, True)
+
+    gcd.DXFtoEntity(cModelPreview["ENTITIES"], entyBlock)
+    For Each entidad In entyBlock
+        entidad.pLayer = gcd.currentDrawing.CurrLayer
+    Next
+    clsEntities.BuildPoi(entyBlock)
+    If entyBlock.Count > 0 Then
+        flxLimits = clsEntities.ComputeLimits(entyBlock)                    ' computo el tamaño de la entidad, y luego determino la escala
+
+        Paint.Begin(imgPreview)
+
+        Paint.Reset ' vuelvo escalas y traslados a cero
+        Paint.Translate(Paint.W / 2, Paint.H / 2) ' centro el dibujo
+        If (flxLimits[2] - flxLimits[0]) > 1e-10 Then scaleX = Paint.w / (flxLimits[2] - flxLimits[0]) Else scaleX = 1e10
+        If (flxLimits[3] - flxLimits[1]) > 1e-10 Then scaleY = Paint.H / (flxLimits[3] - flxLimits[1]) Else scaleY = 1e10
+        If scaleX < scaleY Then Scale = scaleX Else Scale = scaley
+        Paint.Scale(scale * 0.85, -scale * 0.85)
+
+        ' centro el dibujo
+        Paint.Translate(-(flxLimits[2] + flxLimits[0]) / 2, -(flxLimits[3] + flxLimits[1]) / 2)
+
+        For Each entidad In entyBlock
+            If iColor < 0 Then
+                Paint.Brush = gcd.gColor[entidad.colour]
+            Else
+                Paint.Brush = Paint.Color(iColor)
+            Endif
+            If fLineWidth = 0 Then
+                Paint.LineWidth = entidad.LineWidth / scale
+            End If
+
+            entidad.ClassHandler.draw2(entidad)
+        Next
+        Paint.End
+
+    End If
+
+End
+
+Public Function Xreal(ScreenX As Float) As Float
+
+    Return Metros((screenx - fmain.glarea1.w / 2 - gcd.currentDrawing.PanX))
+
+End
+
+Public Function Yreal(ScreenY As Float) As Float
+
+    Return Metros((-ScreenY + fmain.glarea1.h / 2 - gcd.currentDrawing.PanY))
+
+End
+
+Public Function XPix(X As Float) As Float
+
+    'Return Metros((screenx - glarea1.w / 2 - gcd.currentDrawing.PanX))
+    Return Me.Pixels(X) + fmain.glarea1.w / 2 + gcd.currentDrawing.PanX
+
+End
+
+Public Function YPix(Y As Float) As Float
+
+    'Return Metros((-ScreenY + glarea1.h / 2 - gcd.currentDrawing.PanY))
+    Return -(Me.Pixels(Y) - fmain.glarea1.h / 2 + gcd.currentDrawing.PanY)
+
+End
+
+Public Function Pixels(distancia As Float) As Float  ' converts meters to pixels
+    ' transforma Metros en Pixeles sin tener en cuenta el Pan
+
+    Return distancia * gcd.currentDrawing.ScaleZoom
+
+End
+
+' Public Function Metros(pixeles As Integer) As Float  ' converts pixels to meters
+'
+'     Return pixeles / gcd.currentDrawing.ScaleZoom
+'
+' End
+
+Public Function Near(xyzReal As Float) As Float
+    ' return the nearest point to the grid
+    ' this is a world to world points (not pixels)
+
+    ' Example:
+    ' if                    GridSpacing = 0.2
+    ' we pass               xyzReal = 1.35
+    ' function will give    NearReal = 1.40
+
+    Dim n As Integer, r As Float
+
+    If Not fmain.Gridactive Then Return xyzReal
+
+    r = xyzReal / fmain.GridSpacing
+    n = Int(r)
+    r = r - Int(r)
+
+    If r > 0.5 Then n += 1
+
+    Return n * fmain.GridSpacing
+
+End
+
+Public Function ScreenWidth() As Integer
+
+    Return fmain.GLArea1.W
+
+End
+
+Public Function ScreenHeight() As Integer
+
+    Return fmain.GLArea1.h
+
+End
+
+Public Sub redraw()
+
+    fmain.redraw
+
+End
+
+'' Regenera las listas de OpenGL
+Public Sub Regen()
+
+    ' La parte de los VBO
+    clsEntities.glGenBuffers()
+    clsEntities.FillLayersWithEntities(CurrentDrawing)
+    clsEntities.CollectVisibleEntities
+    clsEntities.glGenDrawList
+    clsEntities.glGenDrawListSel
+    redraw
+
+End
+
+Public Function LibreDWGtoDXF(sDwgFile As String) As String
+
+    Dim str, filebase, tmpdwg, tmpdir, tmpdirdxf As String
+    Dim Steps As Integer
+
+    filebase = utils.FileFromPath(sDwgFile)
+    'filebase = sDwgFile
+    steps = 0 ' elimino el archivo temporal que hubiese creado
+
+    If Exist(main.dirDwgIn &/ filebase) Then Kill main.dirDwgIn &/ filebase
+
+    Steps = 1 ' hago una copia previa a la conversion
+    Copy sDwgFile To main.dirDwgIn &/ filebase
+
+    Steps = 2 ' Calling the converter
+    Shell "dwgread -O DXF " & " -o '" & main.dirDxfOut &/ utils.FileWithoutExtension(filebase) & ".dxf' '" & main.dirDwgIn &/ filebase & "'" Wait To str
+    Debug str
+    steps = 3
+    ' vacio el directorio de entrada
+
+    Return main.dirDxfOut &/ utils.FileWithoutExtension(filebase) & ".dxf"
+
+Catch
+
+    Select Case Steps
+        Case 0
+            ' esto puede fallar por acceso denegado
+            Print ("Acces denied to temp file")
+            Return Null
+        Case 1
+            ' esto puede fallar por file corrupt
+            Print ("File corrupt")
+            Return Null
+        Case 2
+            ' esto puede fallar por diversas cuestiones
+            Print ("Conversion failed")
+            Return Null
+        Case 3
+            ' esto puede fallar por diversas cuestiones
+            Print ("Could't empty temp dir")
+            Return Null
+
+    End Select
+
+End

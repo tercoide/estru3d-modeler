@@ -1,0 +1,28 @@
+# Gambas Project File 3.0
+Title=estru3d-modeler
+Startup=main
+Version=0.0.1
+VersionAddBranch=1
+Component=gb.args
+Component=gb.image
+Component=gb.cairo
+Component=gb.gui
+Component=gb.form
+Component=gb.clipper
+Component=gb.desktop
+Component=gb.form.dialog
+Component=gb.settings
+Component=gb.gui.opengl
+Component=gb.opengl
+Component=gb.logging
+Component=gb.opengl.glsl
+Component=gb.opengl.glu
+Component=gb.xml
+Description="A very simple CAD progra"
+Authors="terco"
+Environment="GB_GUI=gb.qt5"
+TabSize=4
+Translate=1
+Language=en_US
+Vendor=trkSoft
+Packager=1

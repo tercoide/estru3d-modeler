@@ -1,0 +1,26 @@
+[Breakpoints]
+Count=5
+Breakpoint[1]="APPMain.197"
+
+
+[DebugWindow]
+Count=2
+DebugWindow[1]="cModel"
+DebugWindow[2]="cImport"
+
+
+[Executable]
+DoNotIncrementVersion=False
+Path="GauchoCAD.gambas"
+
+[FCommit]
+LastCommit="text, mtext"
+
+[OpenFile]
+Count=9
+File[1]=".src/Forms/APPMain.form"
+Active=7
+
+[Watches]
+Count=0
+
