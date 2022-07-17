@@ -1,10 +1,6 @@
 # Gambas Action File 3.0
 
 { Actions
-  { Action
-    Text = ""
-    Picture = "icon:/32/add"
-  }
   { Action Edit_Copy
     Text = "Copy"
     Shortcut = ""
@@ -73,43 +69,35 @@
   { Action cadArc
     Text = "Arc"
     Shortcut = ""
-    Picture = "png/arc4.png"
+    Picture = "$ToolButton"
   }
-  { Action cadArea
+  { Action cadArc_dimension
     Text = ""
-    Picture = "png/area.png"
+    Picture = "$ToolButton"
   }
   { Action cadArray
     Text = "Array rectangular"
     Shortcut = ""
-    Picture = "png/Array.png"
+  }
+  { Action cadAttDef
+    Text = ""
+    Picture = "$ToolButton"
   }
   { Action cadAttdef
-    Text = "AtDf"
+    Text = "Attdef"
     Shortcut = ""
-    Picture = "$ToolButton"
   }
   { Action cadAttrib
     Text = "Attrib"
     Shortcut = ""
   }
-  { Action cadBreak
-    Text = ""
-    Picture = "png/Break.png"
-  }
-  { Action cadChamfer
-    Text = "Cha"
-    Picture = "$ToolButton"
-  }
   { Action cadCircle
     Text = "Circle"
     Shortcut = ""
-    Picture = "png/circle3.png"
   }
   { Action cadCopy
     Text = "Copy"
     Shortcut = ""
-    Picture = "png/Copy.png"
   }
   { Action cadDIMENSION_ANG3PT
     Text = "Angular"
@@ -119,9 +107,21 @@
     Text = "Diameter"
     Shortcut = ""
   }
+  { Action cadDimension_Linear
+    Text = ""
+    Picture = "$ToolButton"
+  }
   { Action cadDimension_Linear&0
     Text = "Horizontal"
     Shortcut = ""
+  }
+  { Action cadDimension_Linear&1
+    Text = "H"
+    Picture = "$ToolButton"
+  }
+  { Action cadDimension_Linear&2
+    Text = "V"
+    Picture = "$ToolButton"
   }
   { Action cadDimension_Linear&90000
     Text = "Vertical"
@@ -135,52 +135,29 @@
     Text = "Aligned"
     Shortcut = ""
   }
-  { Action cadDimension_linear&0
+  { Action cadDimension_linear&10
     Text = ""
-    Picture = "png/dim_horizontal.png"
+    Picture = "$ToolButton"
   }
-  { Action cadDimension_linear&45000
+  { Action cadDimension_linear&20
     Text = ""
-    Picture = "icon:/32/add"
-  }
-  { Action cadDimension_linear&90000
-    Text = ""
-    Picture = "png/dim_verical.png"
+    Picture = "$ToolButton"
   }
   { Action cadDimension_ordinate
     Text = "Ordinate"
     Shortcut = ""
   }
-  { Action cadDivide
-    Text = "Div"
-    Picture = "$ToolButton"
-  }
   { Action cadEllipse
     Text = "Ellipse"
     Shortcut = ""
-    Picture = "png/ellipse partial.png"
-  }
-  { Action cadErase
-    Text = ""
-    Picture = "png/Erase.png"
-  }
-  { Action cadExplode
-    Text = "Ex"
-    Picture = "$ToolButton"
-  }
-  { Action cadFillet
-    Text = "Fil"
-    Picture = "$ToolButton"
   }
   { Action cadHatch
     Text = "Hatch"
     Shortcut = ""
-    Picture = "png/hatch.png"
   }
   { Action cadLWPolyline
     Text = "Polyline"
     Shortcut = ""
-    Picture = "png/Point.png"
   }
   { Action cadLarge_Radial_Dimension
     Text = "Radial"
@@ -189,33 +166,19 @@
   { Action cadLeader
     Text = "Leader"
     Shortcut = ""
-    Picture = "png/leader.png"
   }
   { Action cadLine
     Text = "Line"
     Shortcut = ""
-    Picture = "png/line4.png"
   }
   { Action cadMText
     Text = "MText"
     Shortcut = ""
-  }
-  { Action cadMirror
-    Text = ""
-    Picture = "png/Mirror.png"
+    Picture = "$ToolButton"
   }
   { Action cadMove
     Text = "Move"
     Shortcut = ""
-    Picture = "png/Move.png"
-  }
-  { Action cadMtext
-    Text = ""
-    Picture = "png/mtext.png"
-  }
-  { Action cadOffset
-    Text = "Ofs"
-    Picture = "$ToolButton"
   }
   { Action cadPan
     Text = "P"
@@ -228,28 +191,14 @@
   { Action cadPolygon
     Text = "Polygon"
     Shortcut = ""
-    Picture = "png/polygon.png"
-  }
-  { Action cadProtractor
-    Text = ""
-    Picture = "png/protractor.png"
   }
   { Action cadRay
     Text = "Ray"
     Shortcut = ""
-    Picture = "png/ray.png"
   }
   { Action cadRectangle
     Text = "Rectangle"
     Shortcut = ""
-    Picture = "png/rectangle3.png"
-  }
-  { Action cadRotate
-    Text = ""
-    Picture = "png/Rotate.png"
-  }
-  { Action cadRuler
-    Text = ""
     Picture = "$ToolButton"
   }
   { Action cadSPline
@@ -259,31 +208,22 @@
   { Action cadScale
     Text = "Scale"
     Shortcut = ""
-    Picture = "png/Scale.png"
   }
   { Action cadSolid
     Text = "Solid"
     Shortcut = ""
-    Picture = "png/solid.png"
-  }
-  { Action cadSpline
-    Text = ""
-    Picture = "png/line3.png"
   }
   { Action cadStretch
     Text = "Stretch"
     Shortcut = ""
-    Picture = "png/transform.png"
   }
   { Action cadText
     Text = "Text"
     Shortcut = ""
-    Picture = "png/text.png"
   }
   { Action cadTrim
     Text = "Trim"
     Shortcut = ""
-    Picture = "png/Trim.png"
   }
   { Action cadZoomW
     Text = "W"
@@ -291,6 +231,82 @@
   }
   { Action cadZoome
     Text = "E"
+    Picture = "$ToolButton"
+  }
+  { Action cadarc
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadblocks
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadcircle
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_aligned
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_ang3pt
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_diameter
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_ordinate
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_radius
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadellipse
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadhatch
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadleader
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadline
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadlwpolyline
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadpoint
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadpolygon
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadslab
+    Text = "S"
+    Picture = "$ToolButton"
+  }
+  { Action cadsolid
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadspline
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadtext
+    Text = ""
     Picture = "$ToolButton"
   }
   { Action dimstyle_change

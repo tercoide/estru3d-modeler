@@ -1,6 +1,6 @@
 ' Gambas class file
 
-' m-designer
+' GambasCAD
 ' A simple CAD made in Gambas
 '
 ' Copyright (C) Ing Martin P Cristia
@@ -40,25 +40,28 @@ End Struct
 Public ScreenDensity As Float = 1080 / 29.5  ' pixele by cm wich gives a 1:100 scale in my monitor
 
 Public Helper As New HelperSt       ' Esto se escribe al lado del mouse
-Public HelperTrabajo As String      '   parte inferior izquierda
-Public HelperTrabajoNext As String      '   parte inferior izquierda
-Public HelperTrabajo2 As String     '   sin usar
-Public HelperTrabajo3 As String     '   sin usar
-Public HelperTrabajo4 As String     '   sin usar
+Private $CmdLineHelper As String      '   parte inferior izquierda
+Private $CmdLineHelperNext As String      '   parte inferior izquierda
+Private $CmdLineHelper2 As String     '   sin usar
+Private $CmdLineHelper3 As String     '   sin usar
+Private $CmdLineHelper4 As String     '   sin usar
 Public ErrorMessage As String
 Public ErrorTimer As Integer = 0
 Public HelperDibujo As String       ' Se escribe abajo "Grid  Ortho" , etc
 Public trabajoYteclado As String
 Public PromtSlash As String = "|"
 
+Property CmdLineHelper As String
+Property CmdLineHelperNext As String
+
 Public Function CleanTexts()
 
     Helper.texto = ""
-    HelperTrabajo = ""
-    HelperTrabajoNext = ""
-    HelperTrabajo2 = ""
-    HelperTrabajo3 = ""
-    HelperTrabajo4 = ""
+    $CmdLineHelper = ""
+    $CmdLineHelperNext = ""
+    $CmdLineHelper2 = ""
+    $CmdLineHelper3 = ""
+    $CmdLineHelper4 = ""
     HelperDibujo = ""
 
 End
@@ -92,7 +95,7 @@ End
 
 Public Sub DibujaHelper()
 
-    Dim hExt As PaintExtents, sNext As String
+    Dim sNext As String
 
     ' If ErrorMessage <> "" Then
     '
@@ -104,20 +107,22 @@ Public Sub DibujaHelper()
     '
     ' End If
 
-    If HelperTrabajoNext <> "" Then snext = HelperTrabajoNext & " : "
+    If $CmdLineHelperNext <> "" Then snext = $CmdLineHelperNext & " : "
 
-    trabajoYteclado = HelperTrabajo & " > " & sNext & fMain.KeysAccumulator ' & PromtSlash
+    trabajoYteclado = " > " & $CmdLineHelper & sNext & fMain.KeysAccumulator ' & PromtSlash
 
-    'fMain.lblCommand.Text = trabajoYteclado
+    'fMain.txtCommand.Text = trabajoYteclado
 
-    ' Texting(trabajoYteclado, 10 - fMain.glarea1.w / 2, 10 - fMain.glarea1.h / 2, gcd.flgWindowInfoColor) ' Tincho - toma color de la configuración
+    fmain.Refresh
+
+    ' Texting(trabajoYteclado, 10 - fMain.glarea1.w / 2, 10 - fMain.glarea1.h / 2, gcd.flgWindowInfoColor)
 
     HelperDibujo = ""
     If gcd.Orthogonal Then HelperDibujo = "F8-Ortho"
     If fmain.GridActive Then HelperDibujo = HelperDibujo & "  F7-Grid = " & Format$(fmain.GridSpacing, "0.00 m")
     ' and so on...
 
-    texting(HelperDibujo, 40, 10 - fMain.glarea1.h / 2, gcd.flgWindowInfoColor) ' Tincho - toma color de la configuración
+    texting(HelperDibujo, 40, 10 - fMain.glarea1.h / 2, config.WindowInfoColor)
 
     ' helper del mouse
     If Len(Helper.Texto) = 0 Then Return
@@ -126,16 +131,114 @@ Public Sub DibujaHelper()
 
 End Sub
 
+'' Dibuja dX y dY entre dos puntos
+Public Sub DrawDxDy(p1 As Float[], p2 As Float[], Optional iSizePix As Integer = 10)
+
+    ' <------------3.45-------------->
+    ' y algo similar para Y
+
+    ' el ancho de la flecha es iSizePix/3 y el largo = iPixsize
+
+    ' Si dX es chico  >--< 3.45
+    Dim flxTextSize As Float[]
+    Dim iTotalLength As Integer ' en pixeles
+    Dim sTextX, sTextY As String
+    Dim eLineaPpal As Entity
+    Dim eOblique1 As Entity       ' tambien pueden ser flechas Solid
+    Dim eOblique2 As Entity
+    Dim eText As Entity
+    Dim ArrowSize As Float = gcd.Metros(iSizePix)
+    Dim ArrowWidth As Float = ArrowSize / 4
+
+    sTextX = Format$(p2[0] - p1[0], Config.FormatCoord)
+    sTextY = Format$(p2[1] - p1[1], Config.FormatCoord)
+
+    flxTextSize = glPlus.TextExtends(sTextX, iSizePix)
+
+    iTotalLength = flxTextSize[0] + (2 + 0.6) * iSizePix  ' pixeles
+
+    'If iTotalLength < gcd.Pixels(p2[0] - p1[0]) Then ' puedo dibujar todo normalmente
+    ' ================eje X===============================
+    ' flechas
+    eOblique1 = cadSolid.NewEntity([0, 0, ArrowSize, ArrowWidth, ArrowSize, -ArrowWidth, 0, 0])
+
+    eOblique2 = cadSolid.NewEntity([0, 0, -ArrowSize, ArrowWidth, -ArrowSize, -ArrowWidth, 0, 0])
+    If p2[0] < p1[0] Then
+        Gcd.CCC[eOblique1.gender].rotate(eOblique1, Pi)
+
+        Gcd.CCC[eOblique2.gender].rotate(eOblique2, Pi)
+
+    Endif
+
+    Gcd.CCC[eOblique1.gender].translate(eOblique1, p1[0], p1[1])
+    Gcd.CCC[eOblique2.gender].translate(eOblique2, p2[0], p1[1])
+
+    ' linea principal
+    eLineaPpal = cadLine.NewEntity([P1[0], P1[1], P2[0], p1[1]])
+
+    ' texto
+    eText = cadMText.NewEntity([(p2[0] - p1[0]) / 2 + p1[0], p1[1]])
+    eText.fParam[cadMText.ipaAttchmPoint] = 8
+    eText.fParam[cadMText.ipaTextHeight] = gcd.Metros(iSizePix)
+
+    eText.StringData[cadText.sdaText] = sTextX
+
+    eOblique1.Colour = config.WindowAidsColor
+    eOblique2.Colour = Config.WindowAidsColor
+    eLineaPpal.Colour = Config.WindowAidsColor
+    eText.Colour = Config.WindowAidsColor
+
+    Gcd.CCC[eOblique1.gender].Draw(eOblique1)
+    Gcd.CCC[eOblique2.gender].Draw(eOblique2)
+    Gcd.CCC[eLineaPpal.gender].Draw(eLineaPpal)
+    Gcd.CCC[eText.gender].Draw(eText)
+
+    ' ================eje Y===============================
+    ' flechas
+    eOblique1 = cadSolid.NewEntity([0, 0, ArrowSize, ArrowWidth, ArrowSize, -ArrowWidth, 0, 0])
+    If p2[1] < p1[1] Then
+        Gcd.CCC[eOblique1.gender].rotate(eOblique1, Pi * 3 / 2)
+    Else
+        Gcd.CCC[eOblique1.gender].rotate(eOblique1, Pi / 2)
+    Endif
+
+    Gcd.CCC[eOblique1.gender].translate(eOblique1, p2[0], p1[1])
+    eOblique2 = cadSolid.NewEntity([0, 0, -ArrowSize, ArrowWidth, -ArrowSize, -ArrowWidth, 0, 0])
+    If p2[1] < p1[1] Then
+        Gcd.CCC[eOblique2.gender].rotate(eOblique2, Pi * 3 / 2)
+    Else
+        Gcd.CCC[eOblique2.gender].rotate(eOblique2, Pi / 2)
+    Endif
+
+    Gcd.CCC[eOblique2.gender].translate(eOblique2, p2[0], p2[1])
+    eOblique1.Colour = config.WindowAidsColor
+    eOblique2.Colour = Config.WindowAidsColor
+
+    eLineaPpal.p.Clear
+    eLineaPpal.p.Insert([P2[0], P1[1], P2[0], p2[1]])
+    eText.StringData[cadText.sdaText] = sTextY
+    eText.p.Clear
+    eText.P.Insert([p2[0], (p2[1] - p1[1]) / 2 + p1[1]])
+
+    Gcd.CCC[eOblique1.gender].Draw(eOblique1)
+    Gcd.CCC[eOblique2.gender].Draw(eOblique2)
+    Gcd.CCC[eLineaPpal.gender].Draw(eLineaPpal)
+    Gcd.CCC[eText.gender].Draw(eText)
+
+    'End If
+
+End
+
 Public Sub DrawCoordenadas()
 
     ' helpers
     Dim l As String, l2 As String, lEsc As String
 
-    l = Format$(fmain.near(fMain.Xreal(fMain.cursorX)), "0.00") & " : " & Format$(fmain.near(fMain.Yreal(fMain.cursorY)), "0.00")
+    l = Format$(gcd.near(gcd.xreal(fMain.cursorX)), "0.00") & " : " & Format$(gcd.near(gcd.Yreal(fMain.cursorY)), "0.00")
 
     '    l2 = "Mouse: " & Str$(puntos.cursorX) & ": " & Str$(puntos.cursorY)
 
-    l2 = "Zoom " & Format(gcd.CurrentDrawing.ScaleZoom, "0.0000") ' & " - Pan: " & Str$(gcd.CurrentDrawing.PanX) & ", " & Str$(gcd.CurrentDrawing.PanY)
+    l2 = "Zoom " & Format(gcd.Drawing.ScaleZoom, "0.0000") ' & " - Pan: " & Str$(gcd.Drawing.PanX) & ", " & Str$(gcd.Drawing.PanY)
 
     'FCAD.nDraws = 0
 
@@ -143,13 +246,13 @@ Public Sub DrawCoordenadas()
     ' en mi monitor, 29cm  = 1080 pixeles
 
     fMain.lblCoord.Text = l
-    fMain.lblZoom.text = l2
+    'fMain.lblZoom.text = l2
     Return
     ' TODO: borrar lo q sigue
     Dim e As Float, z As Float
     e = 1080 / 0.29 ' pixeles por metro segun el tamaño real de la pantalla
-    z = fMain.Metros(1) ' metros por pixel segun la ampliacion del usuario (rueda del mouse)
-    lEsc = "Esc 1:" & Format$(1 / gcd.CurrentDrawing.ScaleZoom * 100 * ScreenDensity, "0")
+    z = gcd.Metros(1) ' metros por pixel segun la ampliacion del usuario (rueda del mouse)
+    lEsc = "Esc 1:" & Format$(1 / gcd.Drawing.ScaleZoom * 100 * ScreenDensity, "0")
 
     Texting(l, 10 - fMain.glarea1.w / 2, fMain.glarea1.h / 2 - 15, gcd.flgWindowInfoColor)
     Texting(l2, 10 - fMain.glarea1.w / 2, fMain.glarea1.h / 2 - 35, gcd.flgWindowInfoColor)
@@ -162,7 +265,7 @@ Public Sub DrawEjes()
     ' helper de los ejes coordenados
     ' TODO:  no se porque el fondo de las dashes me sale gris y no blanco
     ' paint.brush = Paint.Color(Color.RGB(0, 0, 0, 0))
-    ' paint.LineWidth = 1 / gcd.CurrentDrawing.ScaleZoom
+    ' paint.LineWidth = 1 / gcd.Drawing.ScaleZoom
     ' paint.Dash = DashDot
     ' paint.MoveTo(0 - (DashDot[0] + DashDot[1] + DashDot[2] / 2), 0) ' me voy al origen de coordenadas
     ' paint.relLineTo(1000, 0)
@@ -181,8 +284,8 @@ End
 '
 '   espaciado = fMain.pixels(puntos.GridSpacing) ' tamaño de la grid en pixeles
 '
-'   xg = fMain.Xreal(0) ' Puntos reales aproximados al 0,0 de la pantalla
-'   yg = fMain.Yreal(0)
+'   xg = gcd.xreal(0) ' Puntos reales aproximados al 0,0 de la pantalla
+'   yg = gcd.Yreal(0)
 '
 '   xg = puntos.Near(xg) ' punto en mundo real ajustado a grid
 '   yg = puntos.Near(yg)
@@ -212,7 +315,7 @@ End
 '   Do ' verticales
 '     If espaciado < 5 Then Break
 '     paint.MoveTo(xg, yg)
-'     paint.RelLineTo(0, gcd.CurrentDrawing.DdrwArea.Height + espaciado)
+'     paint.RelLineTo(0, gcd.Drawing.DdrwArea.Height + espaciado)
 '     xg += espaciado - 0.5
 '   Loop Until xg > (FCAD.drwArea.Width + espaciado * 2)
 '
@@ -224,21 +327,58 @@ End
 
 Public Sub DrawPolygons() ' and other debugging stuff
 
-    Dim e As Entity, i As Integer, p0, p1 As Float
+    Dim e As Entity
 
-    ' HelperTrabajo2 = "gcd.clsJob: " & Str(gcd.clsJob) & "->" & Str(EntityBuilder.elem)
+    ' CmdLineHelper2 = "gcd.clsJob: " & Str(gcd.clsJob) & "->" & Str(ENTITYBUILDER.elem)
     ' '
     ' Texting(HelperTrabajo2, 300, fMain.glarea1.h - 20, Color.Blue)
     ' '
-    ' HelperTrabajo2 = "gcd.clsJobPrevious: " & Str(gcd.clsJobPrevious)
+    ' CmdLineHelper2 = "gcd.clsJobPrevious: " & Str(gcd.clsJobPrevious)
     ' '
     '
     ' Texting(HelperTrabajo2, 300, fMain.glarea1.h - 40, Color.Blue)
     '
     ' If gcd.clsJob.gender = "Builder" Then Return
 
-    For Each e In gcd.CurrentDrawing.oVisibleEntities
+    For Each e In gcd.Drawing.oVisibleEntities
         If e.Polygon Then glPlus.Polygon(e.Polygon, Color.Blue, 1)
     Next
+
+End
+
+Public Sub Refresh()
+
+    'DibujaHelper
+    ' fmain.txtInput.X = fmain.W / 2
+    ' fmain.txtInput.Y = fmain.h / 2
+    ' fmain.txtInput.SetFocus()
+    ' 'fmain.txtInput.Text = fmain.KeysAccumulator
+    ' fmain.txtInput.Visible = True
+
+End
+
+Private Function CmdLineHelper_Read() As String
+
+    Return $CmdLineHelper
+
+End
+
+Private Sub CmdLineHelper_Write(Value As String)
+
+    $CmdLineHelper = Value
+    Me.Refresh()
+
+End
+
+Private Function CmdLineHelperNext_Read() As String
+
+    Return $CmdLineHelperNext
+
+End
+
+Private Sub CmdLineHelperNext_Write(Value As String)
+
+    $CmdLineHelperNext = Value
+    Me.Refresh()
 
 End

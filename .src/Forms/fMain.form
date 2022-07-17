@@ -436,15 +436,6 @@
       #Public = True
       Arrow = False
     }
-    { !tblLTypes ToolBtnList
-      MoveScaled(81,0,9,4)
-      #Public = True
-      Tracking = True
-    }
-    { !tblLineWt ToolBtnList
-      MoveScaled(91,0,8,4)
-      #Public = True
-    }
     { !cmbDimStyle ComboBox
       MoveScaled(100,0,12,4)
       #Public = True
@@ -459,314 +450,206 @@
     Drop = True
     Expand = True
     Arrangement = Arrange.Horizontal
-    { ScrollView1 ScrollView
-      MoveScaled(0,0,21,62)
-      Arrangement = Arrange.Vertical
-      { Panel9 Panel
-        MoveScaled(0,0,19,27)
-        Arrangement = Arrange.Vertical
-        { ToggleButton1 ToggleButton
-          MoveScaled(0,0,19,2)
-          Text = ("Draw")
-          Value = True
+    { !pnlToolbarLeft VPanel
+      MoveScaled(0,0,8,78)
+      #Public = True
+      { vpnDibujar VPanel
+        MoveScaled(0,0,9,32)
+        { tblLine ToolButton
+          MoveScaled(0,0,4,4)
+          Action = "cadline"
         }
-        { VBox2 Panel
-          MoveScaled(0,2,19,25)
-          Expand = True
-          AutoResize = True
-          { ToolButton50 ToolButton
-            MoveScaled(5,0,4,4)
-            Action = "cadLWPolyline"
-            Picture = Picture["png/lwpolyline3.png"]
-          }
-          { ToolButton51 ToolButton
-            MoveScaled(10,0,4,4)
-            Action = "cadRay"
-            Picture = Picture["png/ray.png"]
-          }
-          { ToolButton52 ToolButton
-            MoveScaled(15,0,4,4)
-            Action = "cadLWPolyline"
-            Picture = Picture["png/Point.png"]
-          }
-          { ToolButton66 ToolButton
-            MoveScaled(0,0,4,4)
-            Action = "cadLine"
-            Picture = Picture["png/line4.png"]
-          }
-          { ToolButton53 ToolButton
-            MoveScaled(0,5,4,4)
-            Action = "cadRectangle"
-            Picture = Picture["png/rectangle3.png"]
-          }
-          { ToolButton54 ToolButton
-            MoveScaled(5,5,4,4)
-            Action = "cadPolygon"
-            Picture = Picture["png/polygon.png"]
-          }
-          { ToolButton55 ToolButton
-            MoveScaled(10,5,4,4)
-            Action = "cadSolid"
-            Picture = Picture["png/solid.png"]
-          }
-          { ToolButton56 ToolButton
-            MoveScaled(15,5,4,4)
-            Action = "cadCircle"
-            Picture = Picture["png/circle3.png"]
-          }
-          { ToolButton57 ToolButton
-            MoveScaled(0,10,4,4)
-            Action = "cadArc"
-            Picture = Picture["png/arc4.png"]
-          }
-          { ToolButton58 ToolButton
-            MoveScaled(10,10,4,4)
-            Expand = True
-            Action = "cadSpline"
-            Picture = Picture["png/line3.png"]
-          }
-          { ToolButton59 ToolButton
-            MoveScaled(15,10,4,4)
-            Action = "cadText"
-            Picture = Picture["png/text.png"]
-          }
-          { ToolButton65 ToolButton
-            MoveScaled(5,10,4,4)
-            Action = "cadEllipse"
-            Picture = Picture["png/ellipse partial.png"]
-          }
-          { ToolButton60 ToolButton
-            MoveScaled(0,15,4,4)
-            Action = "cadMtext"
-            Picture = Picture["png/mtext.png"]
-          }
-          { ToolButton61 ToolButton
-            MoveScaled(5,15,4,4)
-            Action = "cadLeader"
-            Picture = Picture["png/leader.png"]
-          }
-          { ToolButton63 ToolButton
-            MoveScaled(10,15,4,4)
-            Action = "cadAttdef"
-            Text = ("AtDf")
-          }
-          { ToolButton64 ToolButton
-            MoveScaled(0,20,4,4)
-            Action = "cadHatch"
-            Picture = Picture["png/hatch.png"]
-          }
+        { tblArc ToolButton
+          MoveScaled(0,4,4,4)
+          Action = "cadArc"
+        }
+        { tbnleader ToolButton
+          MoveScaled(0,8,4,4)
+          Action = "cadleader"
+        }
+        { tbnlwpolyline ToolButton
+          MoveScaled(0,12,4,4)
+          Action = "cadlwpolyline"
+        }
+        { tbnsolid ToolButton
+          MoveScaled(0,16,4,4)
+          Action = "cadsolid"
+        }
+        { tbnellipse ToolButton
+          MoveScaled(0,20,4,4)
+          Action = "cadellipse"
+        }
+        { tbnpolygon ToolButton
+          MoveScaled(0,24,4,4)
+          Action = "cadpolygon"
+        }
+        { tbnAttDef ToolButton
+          MoveScaled(0,28,4,4)
+          Action = "cadAttDef"
+        }
+        { tblCircle ToolButton
+          MoveScaled(4,0,4,4)
+          Action = "cadcircle"
+        }
+        { tbntext ToolButton
+          MoveScaled(4,4,4,4)
+          Action = "cadtext"
+        }
+        { tbnspline ToolButton
+          MoveScaled(4,8,4,4)
+          Action = "cadspline"
+        }
+        { tbnPoint ToolButton
+          MoveScaled(4,12,4,4)
+          Action = "cadpoint"
+        }
+        { tbnRectangle ToolButton
+          MoveScaled(4,16,4,4)
+          Action = "cadRectangle"
+        }
+        { tbnarc ToolButton
+          MoveScaled(4,20,4,4)
+          Action = "cadarc"
+        }
+        { tbnMText ToolButton
+          MoveScaled(4,24,4,4)
+          Action = "cadMText"
         }
       }
-      { Panel11 Panel
-        MoveScaled(0,30,19,14)
-        Arrangement = Arrange.Vertical
-        AutoResize = True
-        { ToggleButton3 ToggleButton
-          MoveScaled(0,0,19,2)
-          Text = ("Dimension")
-          Value = True
+      { VPanel2 VPanel
+        MoveScaled(0,33,8,24)
+        { tbndimension_linear ToolButton
+          MoveScaled(0,0,4,4)
+          Action = "cadDimension_Linear"
         }
-        { VBox4 Panel
-          MoveScaled(0,2,19,9)
-          Background = Color.TextBackground
-          Expand = True
-          AutoResize = True
-          { ToolButton20 ToolButton
-            MoveScaled(5,0,4,4)
-            Action = "cadDimension_linear&90000"
-            Picture = Picture["png/dim_verical.png"]
-          }
-          { ToolButton45 ToolButton
-            MoveScaled(10,0,4,4)
-            Action = "cadDimension_linear&45000"
-            Picture = Picture["icon:/32/add"]
-          }
-          { ToolButton48 ToolButton
-            MoveScaled(15,0,4,4)
-            Action = "  "
-            Picture = Picture["icon:/32/add"]
-          }
-          { ToolButton17 ToolButton
-            MoveScaled(0,5,4,4)
-            Action = "  "
-            Picture = Picture["icon:/32/add"]
-          }
-          { ToolButton49 ToolButton
-            MoveScaled(5,5,4,4)
-            Action = "  "
-            Picture = Picture["icon:/32/add"]
-          }
-          { ToolButton46 ToolButton
-            MoveScaled(10,5,4,4)
-            Action = "  "
-            Picture = Picture["icon:/32/add"]
-          }
-          { ToolButton47 ToolButton
-            MoveScaled(15,5,4,4)
-            Action = "  "
-            Picture = Picture["icon:/32/add"]
-          }
-          { ToolButton18 ToolButton
-            MoveScaled(0,0,4,4)
-            Action = "cadDimension_linear&0"
-            Picture = Picture["png/dim_horizontal.png"]
-          }
+        { tbndimension_ang3pt ToolButton
+          MoveScaled(0,4,4,4)
+          Action = "caddimension_ang3pt"
+        }
+        { tbndimension_radius ToolButton
+          MoveScaled(0,8,4,4)
+          Action = "caddimension_radius"
+        }
+        { tbnArc_dimension ToolButton
+          MoveScaled(0,12,4,4)
+          Action = "cadArc_dimension"
+        }
+        { tbndimension_linear_vertical ToolButton
+          MoveScaled(0,16,4,4)
+          Action = "cadDimension_Linear&2"
+          Text = ("V")
+        }
+        { tbndimension_baseline ToolButton
+          MoveScaled(0,20,4,4)
+          Action = "cadDimension_linear&20"
+        }
+        { tbndimension_aligned ToolButton
+          MoveScaled(4,0,4,4)
+          Action = "caddimension_aligned"
+        }
+        { tbndimension_diameter ToolButton
+          MoveScaled(4,4,4,4)
+          Action = "caddimension_diameter"
+        }
+        { tbndimension_ordinate ToolButton
+          MoveScaled(4,8,4,4)
+          Action = "caddimension_ordinate"
+        }
+        { tbndimension_linear_horizontal ToolButton
+          MoveScaled(4,12,4,4)
+          Action = "cadDimension_Linear&1"
+          Text = ("H")
+        }
+        { tbndimension_continue ToolButton
+          MoveScaled(4,16,4,4)
+          Action = "cadDimension_linear&10"
+        }
+        { tbndimension_continue2 ToolButton
+          MoveScaled(4,20,4,4)
         }
       }
-      { Panel10 Panel
-        MoveScaled(0,44,19,24)
-        Arrangement = Arrange.Vertical
-        AutoResize = True
-        { ToggleButton2 ToggleButton
-          MoveScaled(0,0,19,2)
-          Text = ("Modify")
-          Value = True
+      { VPanel3 VPanel
+        MoveScaled(0,60,8,22)
+        { tbnBlock ToolButton
+          MoveScaled(0,0,4,4)
+          ToolTip = ("Block")
+          Text = ("Bl")
         }
-        { VBox3 Panel
-          MoveScaled(0,2,19,19)
-          Expand = True
-          AutoResize = True
-          { ToolButton30 ToolButton
-            MoveScaled(5,0,4,4)
-            Action = "cadMove"
-            Picture = Picture["png/Move.png"]
-          }
-          { ToolButton29 ToolButton
-            MoveScaled(10,0,4,4)
-            Action = "cadErase"
-            Picture = Picture["png/Erase.png"]
-          }
-          { ToolButton32 ToolButton
-            MoveScaled(15,0,4,4)
-            Action = "cadRotate"
-            Picture = Picture["png/Rotate.png"]
-          }
-          { ToolButton35 ToolButton
-            MoveScaled(0,5,4,4)
-            Action = "cadStretch"
-            Picture = Picture["png/transform.png"]
-          }
-          { ToolButton34 ToolButton
-            MoveScaled(5,5,4,4)
-            Action = "cadScale"
-            Picture = Picture["png/Scale.png"]
-          }
-          { ToolButton33 ToolButton
-            MoveScaled(10,5,4,4)
-            Action = "cadMirror"
-            Picture = Picture["png/Mirror.png"]
-          }
-          { ToolButton36 ToolButton
-            MoveScaled(15,5,4,4)
-            Action = "cadTrim"
-            Picture = Picture["png/Trim.png"]
-          }
-          { ToolButton39 ToolButton
-            MoveScaled(0,10,4,4)
-            Action = "cadBreak"
-            Picture = Picture["png/Break.png"]
-          }
-          { ToolButton38 ToolButton
-            MoveScaled(5,10,4,4)
-            Action = "cadDivide"
-            Text = ("Div")
-          }
-          { ToolButton37 ToolButton
-            MoveScaled(10,10,4,4)
-            Action = "cadFillet"
-            Text = ("Fil")
-          }
-          { ToolButton40 ToolButton
-            MoveScaled(15,10,4,4)
-            Action = "cadChamfer"
-            Text = ("Cha")
-          }
-          { ToolButton43 ToolButton
-            MoveScaled(0,15,4,4)
-            Action = "cadArray"
-            Picture = Picture["png/Array.png"]
-          }
-          { ToolButton42 ToolButton
-            MoveScaled(5,15,4,4)
-            Enabled = False
-            Text = ("Pol")
-          }
-          { ToolButton41 ToolButton
-            MoveScaled(10,15,4,4)
-            Action = "cadOffset"
-            Text = ("Ofs")
-          }
-          { ToolButton44 ToolButton
-            MoveScaled(15,15,4,4)
-            Action = "cadExplode"
-            Text = ("Ex")
-          }
-          { ToolButton31 ToolButton
-            MoveScaled(0,0,4,4)
-            Action = "cadCopy"
-            Picture = Picture["png/Copy.png"]
-          }
+        { ToolButton13 ToolButton
+          MoveScaled(0,4,4,4)
         }
-      }
-      { Panel12 Panel
-        MoveScaled(0,68,19,14)
-        Background = Color.Cyan
-        Arrangement = Arrange.Vertical
-        AutoResize = True
-        { ToggleButton4 ToggleButton
-          MoveScaled(1,-1,19,2)
-          Text = ("Info")
-          Value = True
+        { ToolButton14 ToolButton
+          MoveScaled(0,8,4,4)
         }
-        { VBox5 Panel
-          MoveScaled(0,2,19,4)
-          Background = Color.TextBackground
-          Expand = True
-          AutoResize = True
-          { ToolButton22 ToolButton
-            MoveScaled(5,0,4,4)
-            Action = "cadProtractor"
-            Picture = Picture["png/protractor.png"]
-          }
-          { ToolButton27 ToolButton
-            MoveScaled(10,0,4,4)
-            Action = "cadArea"
-            Picture = Picture["png/area.png"]
-          }
-          { ToolButton25 ToolButton
-            MoveScaled(13,0,4,4)
-            Enabled = False
-            Picture = Picture["icon:/24/add"]
-          }
-          { ToolButton21 ToolButton
-            MoveScaled(0,0,4,4)
-            Action = "cadRuler"
-          }
+        { ToolButton15 ToolButton
+          MoveScaled(0,12,4,4)
         }
-        { !tblProperties TableView
-          MoveScaled(1,8,19,10)
-          #Public = True
-          Expand = True
-          Mode = Select.Single
-          ScrollBar = Scroll.Vertical
-          AutoResize = False
-          Resizable = False
+        { tbnBlocks ToolButton
+          MoveScaled(4,0,4,4)
+          Background = Color.SelectedBackground
+          Action = "cadblocks"
+        }
+        { ToolButton17 ToolButton
+          MoveScaled(4,4,4,4)
+          Foreground = &H00FF00&
+          Action = "cadblocks"
+        }
+        { tbnslab4p ToolButton
+          MoveScaled(4,8,4,4)
+          Action = "cadslab"
+          Text = ("S")
+        }
+        { tbnHatch ToolButton
+          MoveScaled(4,12,4,4)
+          Action = "cadhatch"
         }
       }
     }
     { Panel2 Panel
-      MoveScaled(41,0,39,62)
+      MoveScaled(23,0,57,62)
       Background = Color.Cyan
       Expand = True
       Arrangement = Arrange.Horizontal
-      { !GLArea1 GLArea
-        MoveScaled(3,2,23,23)
+      { !TabPanel1 TabPanel
+        MoveScaled(1,1,52,57)
         #Public = True
-        Background = Color.Black
-        Tracking = True
-        Mouse = Mouse.Cross
-        Drop = True
-        Expand = True
+        Count = 3
+        Index = 0
+        Text = ("Tab 2")
+        { !txtDebug TextArea
+          MoveScaled(4,5,46,39)
+          #Public = True
+          Expand = True
+        }
+        Index = 1
+        Text = ("Tab 1")
+        { TabStrip1 TabStrip
+          MoveScaled(0,0,45,48)
+          Count = 3
+          Orientation = Align.Right
+          Index = 0
+          Text = ("Tab 1")
+          { Panel7 Panel
+            MoveScaled(0,0,37.875,33.875)
+            { !GLArea1 GLArea
+              MoveScaled(8,7,37,33)
+              #Public = True
+              Background = Color.Black
+              Tracking = True
+              Mouse = Cursor.Cross
+              Drop = True
+              Expand = True
+            }
+          }
+          Index = 1
+          Text = ("Tab 2")
+          Index = 2
+          Text = ("Tab 3")
+          Index = 0
+        }
+        Index = 2
+        Text = ("Tab 3")
+        Index = 0
       }
     }
     { VPanel1 Panel
@@ -774,38 +657,6 @@
       Tracking = True
       Drop = True
       Arrangement = Arrange.Vertical
-      { ToolPanel1 ToolPanel
-        MoveScaled(0,0,23,49)
-        Drop = True
-        Expand = True
-        Arrangement = Arrange.Vertical
-        Count = 3
-        Index = 0
-        Text = ("Blocks")
-        { !DirView1 DirView
-          MoveScaled(0,0,23,27)
-          #Public = True
-          Expand = True
-        }
-        { !ListView1 ListView
-          MoveScaled(0,27,23,5)
-          #Public = True
-          Tracking = True
-          Drop = True
-          Expand = True
-        }
-        Index = 1
-        Text = ("Toolbar 1")
-        Index = 2
-        Text = ("Properties")
-        { Panel6 Panel
-          MoveScaled(0,0,14.875,16.75)
-          Expand = True
-          Arrangement = Arrange.Row
-          AutoResize = True
-        }
-        Index = 0
-      }
       { Panel5 Panel
         MoveScaled(0,49,23,18)
         Arrangement = Arrange.Fill
@@ -819,10 +670,10 @@
       }
     }
     { tmrAutosave #Timer
-      #MoveScaled(27,9)
+      #MoveScaled(23,2)
     }
     { Printer1 #Printer
-      #MoveScaled(29,21)
+      #MoveScaled(25,51)
     }
   }
   { HBoxEstado HBox
@@ -898,10 +749,6 @@
 # Gambas Action File 3.0
 
 { Actions
-  { Action   
-    Text = ""
-    Picture = "icon:/32/add"
-  }
   { Action Edit_Copy
     Text = "Copy"
     Shortcut = ""
@@ -970,43 +817,35 @@
   { Action cadArc
     Text = "Arc"
     Shortcut = ""
-    Picture = "png/arc4.png"
+    Picture = "$ToolButton"
   }
-  { Action cadArea
+  { Action cadArc_dimension
     Text = ""
-    Picture = "png/area.png"
+    Picture = "$ToolButton"
   }
   { Action cadArray
     Text = "Array rectangular"
     Shortcut = ""
-    Picture = "png/Array.png"
+  }
+  { Action cadAttDef
+    Text = ""
+    Picture = "$ToolButton"
   }
   { Action cadAttdef
-    Text = "AtDf"
+    Text = "Attdef"
     Shortcut = ""
-    Picture = "$ToolButton"
   }
   { Action cadAttrib
     Text = "Attrib"
     Shortcut = ""
   }
-  { Action cadBreak
-    Text = ""
-    Picture = "png/Break.png"
-  }
-  { Action cadChamfer
-    Text = "Cha"
-    Picture = "$ToolButton"
-  }
   { Action cadCircle
     Text = "Circle"
     Shortcut = ""
-    Picture = "png/circle3.png"
   }
   { Action cadCopy
     Text = "Copy"
     Shortcut = ""
-    Picture = "png/Copy.png"
   }
   { Action cadDIMENSION_ANG3PT
     Text = "Angular"
@@ -1016,9 +855,21 @@
     Text = "Diameter"
     Shortcut = ""
   }
+  { Action cadDimension_Linear
+    Text = ""
+    Picture = "$ToolButton"
+  }
   { Action cadDimension_Linear&0
     Text = "Horizontal"
     Shortcut = ""
+  }
+  { Action cadDimension_Linear&1
+    Text = "H"
+    Picture = "$ToolButton"
+  }
+  { Action cadDimension_Linear&2
+    Text = "V"
+    Picture = "$ToolButton"
   }
   { Action cadDimension_Linear&90000
     Text = "Vertical"
@@ -1032,52 +883,29 @@
     Text = "Aligned"
     Shortcut = ""
   }
-  { Action cadDimension_linear&0
+  { Action cadDimension_linear&10
     Text = ""
-    Picture = "png/dim_horizontal.png"
+    Picture = "$ToolButton"
   }
-  { Action cadDimension_linear&45000
+  { Action cadDimension_linear&20
     Text = ""
-    Picture = "icon:/32/add"
-  }
-  { Action cadDimension_linear&90000
-    Text = ""
-    Picture = "png/dim_verical.png"
+    Picture = "$ToolButton"
   }
   { Action cadDimension_ordinate
     Text = "Ordinate"
     Shortcut = ""
   }
-  { Action cadDivide
-    Text = "Div"
-    Picture = "$ToolButton"
-  }
   { Action cadEllipse
     Text = "Ellipse"
     Shortcut = ""
-    Picture = "png/ellipse partial.png"
-  }
-  { Action cadErase
-    Text = ""
-    Picture = "png/Erase.png"
-  }
-  { Action cadExplode
-    Text = "Ex"
-    Picture = "$ToolButton"
-  }
-  { Action cadFillet
-    Text = "Fil"
-    Picture = "$ToolButton"
   }
   { Action cadHatch
     Text = "Hatch"
     Shortcut = ""
-    Picture = "png/hatch.png"
   }
   { Action cadLWPolyline
     Text = "Polyline"
     Shortcut = ""
-    Picture = "png/Point.png"
   }
   { Action cadLarge_Radial_Dimension
     Text = "Radial"
@@ -1086,33 +914,19 @@
   { Action cadLeader
     Text = "Leader"
     Shortcut = ""
-    Picture = "png/leader.png"
   }
   { Action cadLine
     Text = "Line"
     Shortcut = ""
-    Picture = "png/line4.png"
   }
   { Action cadMText
     Text = "MText"
     Shortcut = ""
-  }
-  { Action cadMirror
-    Text = ""
-    Picture = "png/Mirror.png"
+    Picture = "$ToolButton"
   }
   { Action cadMove
     Text = "Move"
     Shortcut = ""
-    Picture = "png/Move.png"
-  }
-  { Action cadMtext
-    Text = ""
-    Picture = "png/mtext.png"
-  }
-  { Action cadOffset
-    Text = "Ofs"
-    Picture = "$ToolButton"
   }
   { Action cadPan
     Text = "P"
@@ -1125,28 +939,14 @@
   { Action cadPolygon
     Text = "Polygon"
     Shortcut = ""
-    Picture = "png/polygon.png"
-  }
-  { Action cadProtractor
-    Text = ""
-    Picture = "png/protractor.png"
   }
   { Action cadRay
     Text = "Ray"
     Shortcut = ""
-    Picture = "png/ray.png"
   }
   { Action cadRectangle
     Text = "Rectangle"
     Shortcut = ""
-    Picture = "png/rectangle3.png"
-  }
-  { Action cadRotate
-    Text = ""
-    Picture = "png/Rotate.png"
-  }
-  { Action cadRuler
-    Text = ""
     Picture = "$ToolButton"
   }
   { Action cadSPline
@@ -1156,31 +956,22 @@
   { Action cadScale
     Text = "Scale"
     Shortcut = ""
-    Picture = "png/Scale.png"
   }
   { Action cadSolid
     Text = "Solid"
     Shortcut = ""
-    Picture = "png/solid.png"
-  }
-  { Action cadSpline
-    Text = ""
-    Picture = "png/line3.png"
   }
   { Action cadStretch
     Text = "Stretch"
     Shortcut = ""
-    Picture = "png/transform.png"
   }
   { Action cadText
     Text = "Text"
     Shortcut = ""
-    Picture = "png/text.png"
   }
   { Action cadTrim
     Text = "Trim"
     Shortcut = ""
-    Picture = "png/Trim.png"
   }
   { Action cadZoomW
     Text = "W"
@@ -1188,6 +979,82 @@
   }
   { Action cadZoome
     Text = "E"
+    Picture = "$ToolButton"
+  }
+  { Action cadarc
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadblocks
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadcircle
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_aligned
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_ang3pt
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_diameter
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_ordinate
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action caddimension_radius
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadellipse
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadhatch
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadleader
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadline
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadlwpolyline
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadpoint
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadpolygon
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadslab
+    Text = "S"
+    Picture = "$ToolButton"
+  }
+  { Action cadsolid
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadspline
+    Text = ""
+    Picture = "$ToolButton"
+  }
+  { Action cadtext
+    Text = ""
     Picture = "$ToolButton"
   }
   { Action dimstyle_change

@@ -1,44 +1,105 @@
 ' Gambas module file
 
-Public Struct settingST
-    LastOpen1 As String
-    LastOpen2 As String
-    LastOpen3 As String
-    LastOpen4 As String
-    LastOpen5 As String
-End Struct
+' GambasCAD
+' Software para diseño CAD
+'
+' Copyright (C) Ing Martin P Cristia
+'
+' This program is free software; you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation; either version 2 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program; if not, write to the Free Software
+' Foundation, Inc., 51 Franklin St, Fifth Floor,
+' Boston, MA  02110-1301  USA
 
-Public Setting As New SettingST
-Public Params As Settings
-
-'Dirs
-Public dirDwgIn As String = User.Home &/ ".config/m-designer/DwgIn"
-Public dirDxfIn As String = User.Home &/ ".config/m-designer/DxfIn"
-Public dirDwgOut As String = User.Home &/ ".config/m-designer/DwgOut"
-Public dirDxfOut As String = User.Home &/ ".config/m-designer/DxfOut"
-Public dirTemplates As String = User.Home &/ ".config/m-designer/templates"
+Public dirResources As String = "/usr/share/gambascad"
+Public dirDwgIn As String = User.Home &/ ".config/GambasCAD/DwgIn"
+Public dirDxfIn As String = User.Home &/ ".config/GambasCAD/DxfIn"
+Public dirDwgOut As String = User.Home &/ ".config/GambasCAD/DwgOut"
+Public dirDxfOut As String = User.Home &/ ".config/GambasCAD/DxfOut"
+Public dirTemplates As String = User.Home &/ ".config/GambasCAD/templates"
 Public dirBlocks As String      ' path to Blocks
 
 ' file conversion
 Public convLibreDWG As Boolean
 Public convODA As Boolean
+Public DebugMode As Boolean = True
+Public MyLog As File
 
 Public Sub main()
 
-    ' leo la configuracion inicial
-    Config.Load()
+    Dim sFile As String
+
+    Application.MainWindow = fMain
+
+    Wait
+
+    fSplash.Visible = False
+
+    fSplash.Show
+
+    Wait
+
+    ' necesitamo saber desde donde estamos corriendo
+    If Application.Path Like "/usr/bin*" Then
+        DebugMode = False
+        gcd.dirResources = "/usr/share/gambascad"
+
+    Else
+        DebugMode = True
+        gcd.dirResources = Application.Path
+    Endif
 
     ' Inicializo el programa
     Initialize          ' general init
+
+    MyLog = Open User.Home &/ ".config/GambasCAD/log.txt" For Write Create
+
+    gcd.debugInfo("Init program - Version " & Application.Version,,, True)
+    gcd.debugInfo("Debug mode = " & Str(DebugMode),,, True)
+
+    fMain.TabPanel1.Index = 1
+
+    ' leo la configuracion inicial
+    Utils.LoadClass(Config, Config.ConfigFile)
+
     InitColors          ' CAD color init
-    ' InitButtons         ' fMain buttons
+
+    InitClasses
+
     InitMenus           ' fMain menus
 
-    gcd.Main            ' drawing specific init
+    ' TODO: DATO INTERESANTE SI LLAMO A LA SIGUIENTE LINEA DESPUES DE Fmain.Run , los graficos se ven opacos
 
+    gcd.Main            ' drawing specific init
     ' armo el combo de colores
     fLayersOnScreen.Run
+    gcd.debuginfo("LayersOnScreen initialized OK",,, True)
+
     fMain.Run
+    gcd.debuginfo("FMain initialized OK",,, True)
+
+    fSplash.Hide
+
+    Wait
+
+    If Application.Args.Count > 1 Then
+        sFile = Args[1]
+        actions.FileOpen(sfile)
+    Else
+        actions.FileNew
+    Endif
+
+    ' bloques common
+    gcd.LoadCommon
 
 End
 
@@ -47,16 +108,16 @@ Public Sub Initialize()
     Dim aFile As String
 
     ' Dirs
-    If Not IsDir(User.Home &/ ".config/m-designer") Then            ' first timer
-        Mkdir User.Home &/ ".config/m-designer"
+    If Not IsDir(User.Home &/ ".config/GambasCAD") Then            ' first timer
+        Mkdir User.Home &/ ".config/GambasCAD"
         Mkdir dirDwgIn       ' DWG to be converted by ODA
         Mkdir dirDxfIn       ' where ODA puts the converted DWG into DXF
         Mkdir dirDxfOut      ' drawings saved into DXF prior to be converted back to DWG
         Mkdir dirDwgOut     ' where ODA puts the converted DXF into DWG, prior to final destination
         Mkdir dirTemplates
         ' Copio lo templates
-        For Each aFile In Dir(Application.Path &/ "minimal")
-            Copy Application.Path &/ "minimal/" &/ afile To dirTemplates &/ aFile
+        For Each aFile In Dir(gcd.dirResources &/ "minimal")
+            Copy gcd.dirResources &/ "minimal/" &/ afile To dirTemplates &/ aFile
         Next
 
     Else                    ' empty temporary files in case there are any
@@ -83,99 +144,88 @@ Public Sub Initialize()
     ' ODA
     If Exist("/usr/bin/ODAFileConverter") Then convODA = True
 
-    Params = New Settings(User.Home &/ ".config/m-designer/m-designer.conf", "Parameters")
+    ' Select Config.DrawingAreaDarkMode
+    '
+    '     Case False
+    '         Config.WindowBackColor = Color.White
+    '         Config.WindowInfoColor = &HFFFF00
+    '         Config.WindowTextColor = Color.Blue
+    '         Config.WindowCursorColor = Color.Black
+    '         gcd.WhiteAndBlack = Color.Black
+    '
+    '     Case True
+    '         Config.WindowBackColor = Color.Black
+    '         Config.WindowInfoColor = &HA0A000
+    '         Config.WindowTextColor = Color.Yellow
+    '         Config.WindowCursorColor = Color.White
+    '         Config.WhiteAndBlack = Color.White
+    '
+    ' End Select
 
-    Select Params["/DrawingArea/DarkMode", True]
-
-        Case False
-            gcd.flgWindowBackColor = Color.White
-            gcd.flgWindowInfoColor = &HFFFF00
-            gcd.flgWindowTextColor = Color.Blue
-            gcd.flgWindowCursorColor = Color.Black
-            gcd.flgWhiteAndBlack = Color.Black
-
-        Case True
-            gcd.flgWindowBackColor = Color.Black
-            gcd.flgWindowInfoColor = &HA0A000
-            gcd.flgWindowTextColor = Color.Yellow
-            gcd.flgWindowCursorColor = Color.White
-            gcd.flgWhiteAndBlack = Color.White
-
-    End Select
-
-    If Params["/FileConversion"] = "ODA" Then
+    If Config.FileConversion = "ODA" Then
         If convODA Then
             'nothing
         Else If convLibreDWG Then
 
-            Params["/FileConversion"] = "LibreDWG"
+            Config.FileConversion = "LibreDWG"
         Else
             ' none available
-            Params["/FileConversion"] = ""
+            Config.FileConversion = ""
 
         Endif
-    Else If Params["/FileConversion"] = "LibreDWG" Then
+    Else If Config.FileConversion = "LibreDWG" Then
         If convLibreDWG Then
             'nothing
         Else If convODA Then
 
-            Params["/FileConversion"] = "ODA"
+            Config.FileConversion = "ODA"
         Else
             ' none available
-            Params["/FileConversion"] = ""
+            Config.FileConversion = ""
 
         Endif
     Else    ' none selected
         If convODA Then
 
-            Params["/FileConversion"] = "ODA"
+            Config.FileConversion = "ODA"
         Else If convLibreDWG Then
 
-            Params["/FileConversion"] = "LibreDWG"
+            Config.FileConversion = "LibreDWG"
         Endif
     Endif
 
-    dirBlocks = Params["/Blocks/LibraryPath", Application.Path &/ "library"]
-    fMain.DirView1.Root = dirBlocks
+    dirBlocks = Config.BlocksLibraryPath
 
 End
 
-Public Sub Terminate()
+Public Sub InitClasses()
 
-    Dim d As Drawing
-    Dim e As Entity
-    Dim L As Layer
+    Dim cClass As Class
+    Dim s, sFinishedClasses As String
+    Dim sSplit As New String[]
 
-    For Each d In gcd.Drawings
-        For Each e In d.oEntities
-            e.Polygon.Clear
-            e.P.Clear
-            e.Psel.Clear
-            e.PolyLine.Clear
-            e.PoiPoints.Clear
-            e.StringData.Clear
-            e.fParam.Clear
-            e.iParam.Clear
-            e.ClassHandler = Null
-            e.PoiType.Clear
-            gl.DeleteLists(e.glDrwList, 1)
-            gl.DeleteLists(e.glDrwListSel, 1)
-            gl.DeleteLists(e.glDrwListPOI, 1)
-        Next
-        d.oEntities.Clear
-        d.oBlocks.Clear
-        d.cModel.Clear
-        For Each L In d.oLayers
-            L.Entities.Clear
-        Next
-        d.oLayers.Clear
-        d.oLTYpes.Clear
-        d.oVisibleEntities.Clear
-        d.oStyles.Clear
+    sFinishedClasses = "LEADER HATCH POLYLINE ENDBLK SEQEND VERTEX POINT RECTANGLE POLYGON ATTDEF ATTRIB LINE LWPOLYLINE CIRCLE ELLIPSE ARC TEXT MTEXT SPLINE SOLID INSERT DIMENSION DIMENSION_LINEAR DIMENSION_DIAMETER DIMENSION_RADIUS DIMENSION_ANG3PT DIMENSION_ALIGNED DIMENSION_ORDINATE LARGE_RADIAL_DIMENSION ARC_DIMENSION"
+
+    sFinishedClasses &= " AREA ARRAY BLOCKS BREAK CHAMFER COPY DIVIDE EDIT ERASE EXPLODE FILLET ENTITYBUILDER LAYERS MIRROR MOVE OFFSET PAN PROTRACTOR ROTATE RULER SCALE SELECTION STRETCH TRIM ZOOME ZOOMW DUMMY"
+
+    ' smart
+    sFinishedClasses &= " SLAB BIMENTITYBUILDER"
+
+    sSplit = Split(sFinishedClasses, " ")
+
+    For Each s In sSplit
+        ' intento crearla
+        cClass = Null
+        cClass = Class.Load("cad" & s)
+        If cClass Then
+            gcd.CCC.add(cClass.AutoCreate(), s)
+
+            Debug s
+        Else
+            Print "WARNING: the Class " & s & " it's not implemented."
+        End If
+
     Next
-
-    Params.Save
-    Config.Save()
 
 End
 
@@ -444,23 +494,25 @@ Private Sub InitColors()
     gcd.gcolor.add(color.rgb(255, 255, 255))  'By Object?
 
     ' corrijo los colores que no se ven contra el fondo
-    gcd.gcolor[0] = gcd.flgWhiteAndBlack
-    gcd.gcolor[7] = gcd.flgWhiteAndBlack
-    gcd.gcolor[250] = gcd.flgWhiteAndBlack
-    gcd.gcolor[255] = gcd.flgWhiteAndBlack
-    gcd.gcolor[256] = gcd.flgWhiteAndBlack
-    gcd.gcolor[257] = gcd.flgWhiteAndBlack
-    gcd.gcolor[258] = gcd.flgWhiteAndBlack
+    gcd.gcolor[0] = config.WhiteAndBlack
+    gcd.gcolor[7] = config.WhiteAndBlack
+    gcd.gcolor[250] = config.WhiteAndBlack
+    gcd.gcolor[255] = config.WhiteAndBlack
+    gcd.gcolor[256] = config.WhiteAndBlack
+    gcd.gcolor[257] = config.WhiteAndBlack
+    gcd.gcolor[258] = config.WhiteAndBlack
 
 End
 
 Public Sub InitMenus()
 
+    ' colores
     Dim mColors As New Menu(fMain)
     Dim mItem As Menu
-    Dim imgCirculito As Image
+
     Dim i, iColor As Integer
-    Dim msubItem As Menu
+
+    Dim sMenuPre, sMenuPost, sMenuSnap As String
 
     mColors.Name = "mColores"
 
@@ -507,46 +559,65 @@ Public Sub InitMenus()
     fMain.mbtColors.Tag = mColors.Children[0].Tag
     fMain.mbtColors.Action = "Color_256"
 
-    '==============================Blocks==================================
+    ' Menu contextual de entidades
+    ' colores
+    Dim mEntities As New Menu(fMain)
 
-    Dim menBlocks As New Menu(fmain)
-    clsBlocks.mPopUp = menBlocks
+    mEntities.Name = "mEntities"
+    fMain.GLArea1.PopupMenu = "mEntities"
+    ' Cortar/Copiar/Pegar/Propiedades/Apagar sus layers/Hacer actual ese layer
+    '============Cut======================
+    mItem = New Menu(mEntities)
+    mItem.Text = ("Cut")
+    mItem.Action = "mEntities-Cut"
+    mItem.Picture = Picture["icon:/32/cut"]
+    '============Copy======================
+    mItem = New Menu(mEntities)
+    mItem.Text = ("Copy")
+    mItem.Action = "mEntities-Copy"
+    mItem.Picture = Picture["icon:/32/copy"]
+    '============Paste======================
+    mItem = New Menu(mEntities)
+    mItem.Text = ("Paste")
+    mItem.Action = "mEntities-Paste"
+    mItem.Picture = Picture["icon:/32/paste"]
+    '============separator======================
+    mItem = New Menu(mColors)
+    mItem.Text = ""
+    mItem.Action = ""
+    '============Agrupar======================
+    mItem = New Menu(mEntities)
+    mItem.Text = ("Make group")
+    mItem.Action = "mEntities-Group"
+    mItem.Picture = Picture["icon:/32/paste"]
+    '============Desagrupar======================
+    mItem = New Menu(mEntities)
+    mItem.Text = ("Break group")
+    mItem.Action = "mEntities-DeGroup"
+    mItem.Picture = Picture["icon:/32/paste"]
+    '============separator======================
+    mItem = New Menu(mColors)
+    mItem.Text = ""
+    mItem.Action = "" ' & CStr(i)
+    '============Ocultar layers de todo=====
+    mItem = New Menu(mEntities)
+    mItem.Text = ("Hide these Layers")
+    mItem.Action = "mEntities-HideLayers"
+    mItem.Picture = Picture["icon:/32/paste"]
+    '============Desagrupar======================
+    mItem = New Menu(mEntities)
+    mItem.Text = ("Paste")
+    mItem.Action = "mEntities-Paste"
+    mItem.Picture = Picture["icon:/32/paste"]
+    fMain.PopupMenu = "mEntities"
 
-    menBlocks.Name = "mBlocks"
-    mItem = New Menu(menBlocks)
-    mItem.Text = "Scale..."
-    mItem.Action = "menu_blocks_scale"
+    '===================================================================================================================================
 
-    mItem = New Menu(menBlocks)
-    mItem.Text = "Rotation"
-
-    Dim mBubItem As Menu
-    msubItem = New Menu(mItem)
-    msubItem.Text = "0*"
-    msubItem.Action = "menu_blocks_rot_0"
-
-    msubItem = New Menu(mItem)
-    msubItem.Text = "90*"
-    msubItem.Action = "menu_blocks_rot_90"
-
-    msubItem = New Menu(mItem)
-    msubItem.Text = "180*"
-    msubItem.Action = "menu_blocks_rot_180"
-
-    msubItem = New Menu(mItem)
-    msubItem.Text = "270*"
-    msubItem.Action = "menu_blocks_rot_270"
-
-    msubItem = New Menu(mItem)
-    msubItem.Text = ""  ' separator
-
-    msubItem = New Menu(mItem)
-    msubItem.Text = "Other..."
-    msubItem.Action = "menu_blocks_rot_other"
-
-    mItem = New Menu(menBlocks)
-    mItem.Checked = False
-    mItem.Text = "Mirrored"
-    mItem.Action = "menu_blocks_mirrored"
+    sMenuSnap = ""
+    sMenuPost = (";;;Cancel;_CANCEL")
+    Dim vClass As Variant
+    For Each vClass In gcd.CCC
+        Utils.MenuMaker(fmain, vClass.gender, vClass.contextmenu & sMenuPost)
+    Next
 
 End

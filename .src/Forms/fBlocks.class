@@ -40,7 +40,7 @@ Public Sub DrawingArea1_Draw()
         entidad.LineWidth = 1 / entscale * DrawingArea1.w / 3
 
         entidad.LineType = 0
-        entidad.ClassHandler.draw2(entidad)
+        gcd.ccc[entidad.gender].draw2(entidad)
     Next
 
 End
