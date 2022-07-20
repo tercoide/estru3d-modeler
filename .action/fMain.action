@@ -1,277 +1,37 @@
 # Gambas Action File 3.0
 
 { Actions
-  { Action Edit_Copy
-    Text = "Copy"
-    Shortcut = ""
-  }
-  { Action Edit_Cut
-    Text = "Cut"
-    Shortcut = ""
-  }
-  { Action Edit_Paste
-    Text = "Paste"
-    Shortcut = ""
-  }
-  { Action Edit_Redo
-    Text = "Redo"
-    Shortcut = ""
-  }
-  { Action Edit_Undo
-    Text = "Undo"
-    Shortcut = ""
-  }
-  { Action File_Open
-    Text = "Open"
-    Shortcut = ""
-  }
-  { Action File_Quit
-    Text = "Quit"
-    Shortcut = ""
-  }
-  { Action File_Save
-    Text = "Save"
-    Shortcut = ""
-  }
-  { Action File_SaveAs
-    Text = "Save as"
-    Shortcut = ""
-  }
-  { Action File_new
-    Text = "New"
-    Shortcut = ""
-    Picture = "icon:/24/new"
-  }
-  { Action File_previous
-    Text = "Previous files"
-    Shortcut = ""
-  }
-  { Action PDF_Export
-    Text = ""
-    Picture = "icon:/32/pdf"
-  }
-  { Action Print
-    Text = ""
-    Picture = "icon:/32/print"
-  }
-  { Action ReDo
-    Text = ""
-    Picture = "icon:/24/redo"
-  }
-  { Action Regen
-    Text = "Regen"
-    Shortcut = ""
-  }
-  { Action Undo
-    Text = ""
-    Picture = "icon:/24/undo"
+  { Action about
+    Text = "About this program"
+    Picture = "icon:/32/question"
   }
   { Action cadArc
-    Text = "Arc"
-    Shortcut = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadArc_dimension
     Text = ""
     Picture = "$ToolButton"
-  }
-  { Action cadArray
-    Text = "Array rectangular"
-    Shortcut = ""
-  }
-  { Action cadAttDef
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadAttdef
-    Text = "Attdef"
-    Shortcut = ""
-  }
-  { Action cadAttrib
-    Text = "Attrib"
-    Shortcut = ""
-  }
-  { Action cadCircle
-    Text = "Circle"
-    Shortcut = ""
-  }
-  { Action cadCopy
-    Text = "Copy"
-    Shortcut = ""
-  }
-  { Action cadDIMENSION_ANG3PT
-    Text = "Angular"
-    Shortcut = ""
-  }
-  { Action cadDimension_Diameter
-    Text = "Diameter"
-    Shortcut = ""
-  }
-  { Action cadDimension_Linear
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_Linear&0
-    Text = "Horizontal"
-    Shortcut = ""
-  }
-  { Action cadDimension_Linear&1
-    Text = "H"
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_Linear&2
-    Text = "V"
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_Linear&90000
-    Text = "Vertical"
-    Shortcut = ""
-  }
-  { Action cadDimension_Radius
-    Text = "Radious"
-    Shortcut = ""
-  }
-  { Action cadDimension_aligned
-    Text = "Aligned"
-    Shortcut = ""
-  }
-  { Action cadDimension_linear&10
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_linear&20
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_ordinate
-    Text = "Ordinate"
-    Shortcut = ""
-  }
-  { Action cadEllipse
-    Text = "Ellipse"
-    Shortcut = ""
-  }
-  { Action cadHatch
-    Text = "Hatch"
-    Shortcut = ""
-  }
-  { Action cadLWPolyline
-    Text = "Polyline"
-    Shortcut = ""
-  }
-  { Action cadLarge_Radial_Dimension
-    Text = "Radial"
-    Shortcut = ""
-  }
-  { Action cadLeader
-    Text = "Leader"
-    Shortcut = ""
-  }
-  { Action cadLine
-    Text = "Line"
-    Shortcut = ""
-  }
-  { Action cadMText
-    Text = "MText"
-    Shortcut = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadMove
-    Text = "Move"
-    Shortcut = ""
   }
   { Action cadPan
-    Text = "P"
+    Text = "Pan drawing"
     Picture = "$ToolButton"
   }
-  { Action cadPoint
-    Text = "Point"
-    Shortcut = ""
-  }
-  { Action cadPolygon
-    Text = "Polygon"
-    Shortcut = ""
-  }
-  { Action cadRay
-    Text = "Ray"
-    Shortcut = ""
-  }
-  { Action cadRectangle
-    Text = "Rectangle"
-    Shortcut = ""
+  { Action cadSlab
+    Text = ""
     Picture = "$ToolButton"
-  }
-  { Action cadSPline
-    Text = "SPline"
-    Shortcut = ""
-  }
-  { Action cadScale
-    Text = "Scale"
-    Shortcut = ""
-  }
-  { Action cadSolid
-    Text = "Solid"
-    Shortcut = ""
-  }
-  { Action cadStretch
-    Text = "Stretch"
-    Shortcut = ""
-  }
-  { Action cadText
-    Text = "Text"
-    Shortcut = ""
-  }
-  { Action cadTrim
-    Text = "Trim"
-    Shortcut = ""
   }
   { Action cadZoomW
-    Text = "W"
+    Text = "Zoom to a defined window"
     Picture = "$ToolButton"
   }
   { Action cadZoome
-    Text = "E"
-    Picture = "$ToolButton"
-  }
-  { Action cadarc
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadblocks
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadcircle
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_aligned
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_ang3pt
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_diameter
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_ordinate
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_radius
-    Text = ""
+    Text = "Zoom to view all drawing"
     Picture = "$ToolButton"
   }
   { Action cadellipse
     Text = ""
     Picture = "$ToolButton"
   }
-  { Action cadhatch
-    Text = ""
-    Picture = "$ToolButton"
+  { Action cadlayers
+    Text = "Layer table"
+    Picture = "icon:/32/menu"
   }
   { Action cadleader
     Text = ""
@@ -285,33 +45,29 @@
     Text = ""
     Picture = "$ToolButton"
   }
-  { Action cadpoint
-    Text = ""
-    Picture = "$ToolButton"
-  }
   { Action cadpolygon
     Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadslab
-    Text = "S"
     Picture = "$ToolButton"
   }
   { Action cadsolid
     Text = ""
     Picture = "$ToolButton"
   }
-  { Action cadspline
-    Text = ""
-    Picture = "$ToolButton"
+  { Action cofee
+    Text = "Buy me a cofee!!!"
+    Picture = "png/buymeacofee32.png"
   }
-  { Action cadtext
+  { Action config
     Text = ""
-    Picture = "$ToolButton"
+    Picture = "icon:/32/options"
   }
   { Action dimstyle_change
     Text = ""
     Picture = "$ComboBox"
+  }
+  { Action exit
+    Text = ""
+    Picture = "icon:/32/quit"
   }
   { Action file_new
     Text = ""
@@ -328,6 +84,18 @@
   { Action file_saveas
     Text = ""
     Picture = "icon:/32/save-as"
+  }
+  { Action print
+    Text = ""
+    Picture = "icon:/32/print"
+  }
+  { Action redo
+    Text = ""
+    Picture = "icon:/32/redo"
+  }
+  { Action undo
+    Text = ""
+    Picture = "icon:/32/undo"
   }
 }
 

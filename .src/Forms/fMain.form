@@ -5,442 +5,149 @@
   #Translate = False
   Tracking = True
   Drop = True
+  Text = "Mesh"
   Icon = Picture["m-designer logo.png"]
   Arrangement = Arrange.Vertical
   Spacing = True
   Margin = True
-  { mnuFile Menu
-    Text = ("File")
-    { mnuFile_new Menu
-      Action = "File_new"
-      Text = ("New")
-      Picture = Picture["icon:/24/new"]
-      Tag = "new"
-    }
-    { Menu2 Menu
-    }
-    { mnuFile_Open Menu
-      Action = "File_Open"
-      Text = ("Open")
-      Tag = "open"
-    }
-    { mnuFile_previous Menu
-      Action = "File_previous"
-      Text = ("Previous files")
-      Tag = "previous"
-      { mnuReciente1 Menu
-        Text = ("Menu7")
-      }
-      { mnuReciente2 Menu
-        Text = ("Menu8")
-      }
-      { mnuReciente3 Menu
-        Text = ("Menu9")
-      }
-      { mnuReciente4 Menu
-        Text = ("Menu10")
-      }
-      { mnuReciente5 Menu
-        Text = ("Menu11")
-      }
-    }
-    { Menu3 Menu
-    }
-    { mnuFile_Save Menu
-      Action = "File_Save"
-      Text = ("Save")
-      Tag = "save"
-    }
-    { mnuFile_SaveAs Menu
-      Action = "File_SaveAs"
-      Text = ("Save as") & "..."
-      Tag = "saveas"
-    }
-    { Menu4 Menu
-    }
-    { mnuFile_Quit Menu
-      Action = "File_Quit"
-      Text = ("Quit")
-      Tag = "quit"
-    }
-  }
-  { mnuEdit Menu
-    Text = ("Edit")
-    { mnuEdit_Undo Menu
-      Action = "Edit_Undo"
-      Text = ("Undo")
-    }
-    { mnuEdit_Redo Menu
-      Action = "Edit_Redo"
-      Text = ("Redo")
-    }
-    { Menu1 Menu
-    }
-    { mnuEdit_Cut Menu
-      Action = "Edit_Cut"
-      Text = ("Cut")
-    }
-    { mnuEdit_Copy Menu
-      Action = "Edit_Copy"
-      Text = ("Copy")
-    }
-    { mnuEdit_Paste Menu
-      Action = "Edit_Paste"
-      Text = ("Paste")
-    }
-    { Menu39 Menu
-      Text = ("Menu39")
-    }
-    { Menu40 Menu
-    }
-    { Menu38 Menu
-      Action = "Regen"
-      Text = ("Regen")
-    }
-  }
-  { mnuDraw Menu
-    Text = ("Draw")
-    { mnuDraw_Line_Line Menu
-      Action = "cadLine"
-      Text = ("Line")
-      Tag = "Line"
-    }
-    { mnuDraw_Line_lwpolyline Menu
-      Action = "cadLWPolyline"
-      Text = ("Polyline")
-    }
-    { mnuDraw_Line_Ray Menu
-      Action = "cadRay"
-      Text = ("Ray")
-    }
-    { mnuDraw_point Menu
-      Action = "cadPoint"
-      Text = ("Point")
-    }
-    { Menu5 Menu
-    }
-    { mnuDraw_shapes_rectangle Menu
-      Action = "cadRectangle"
-      Text = ("Rectangle")
-    }
-    { mnuDraw_shapes_polygon Menu
-      Action = "cadPolygon"
-      Text = ("Polygon")
-    }
-    { Menu11 Menu
-      Action = "cadSolid"
-      Text = ("Solid")
-    }
-    { Menu9 Menu
-    }
-    { mnuDraw_Circles_circle Menu
-      Action = "cadCircle"
-      Text = ("Circle")
-    }
-    { mnuDraw_Circles_arc Menu
-      Action = "cadArc"
-      Text = ("Arc")
-    }
-    { mnuDraw_Circles_ellipse Menu
-      Action = "cadEllipse"
-      Text = ("Ellipse")
-    }
-    { mnuDraw_Line_spline Menu
-      Action = "cadSPline"
-      Text = ("SPline")
-    }
-    { Menu7 Menu
-    }
-    { mnuDraw_Texts_text Menu
-      Action = "cadText"
-      Text = ("Text")
-    }
-    { mnuDraw_Texts_MText Menu
-      Action = "cadMText"
-      Text = ("MText")
-    }
-    { mnuDraw_Leader Menu
-      Action = "cadLeader"
-      Text = ("Leader")
-    }
-    { Menu8 Menu
-    }
-    { mnuDraw_Texts_Attrib Menu
-      Action = "cadAttrib"
-      Text = ("Attrib")
-    }
-    { mnuDraw_Texts_Attdef Menu
-      Action = "cadAttdef"
-      Text = ("Attdef")
-    }
-    { Menu10 Menu
-    }
-    { Menu6 Menu
-      Action = "cadHatch"
-      Text = ("Hatch")
-    }
-  }
-  { Menu17 Menu
-    Text = ("Dimension")
-    { Menu18 Menu
-      Action = "cadDimension_Linear&0"
-      Text = ("Horizontal")
-    }
-    { Menu19 Menu
-      Action = "cadDimension_Linear&90000"
-      Text = ("Vertical")
-    }
-    { Aligne Menu
-      Action = "cadDimension_aligned"
-      Text = ("Aligned")
-    }
-    { Linear Menu
-      Text = ("Linear")
-    }
-    { Menu35 Menu
-    }
-    { Menu20 Menu
-      Action = "cadDimension_Diameter"
-      Text = ("Diameter")
-    }
-    { Menu21 Menu
-      Action = "cadDimension_Radius"
-      Text = ("Radious")
-    }
-    { Menu24 Menu
-      Action = "cadDIMENSION_ANG3PT"
-      Text = ("Angular")
-    }
-    { Arc Menu
-      Text = ("Arc length")
-    }
-    { Menu37 Menu
-      Action = "cadLarge_Radial_Dimension"
-      Text = ("Radial")
-    }
-    { Menu34 Menu
-    }
-    { Menu33 Menu
-      Text = ("Baseline point")
-    }
-    { Menu36 Menu
-      Action = "cadDimension_ordinate"
-      Text = ("Ordinate")
-    }
-  }
-  { mnuTools Menu
-    Text = ("Tools")
-    { mnuTools_copy Menu
-      Action = "cadCopy"
-      Text = ("Copy")
-    }
-    { mnuTools_Move Menu
-      Action = "cadMove"
-      Text = ("Move")
-    }
-    { mnuTools_rotate Menu
-      Text = ("Rotate")
-    }
-    { mnuTools_erase Menu
-      Text = ("Erase")
-    }
-    { Menu12 Menu
-    }
-    { mnuTools_stretch Menu
-      Action = "cadStretch"
-      Text = ("Stretch")
-    }
-    { Menu13 Menu
-      Action = "cadScale"
-      Text = ("Scale")
-    }
-    { mnuTools_mirror Menu
-      Text = ("Mirror")
-    }
-    { Menu14 Menu
-    }
-    { mnuTools_Trim Menu
-      Action = "cadTrim"
-      Text = ("Trim")
-    }
-    { mnuTools_break Menu
-      Text = ("Break")
-    }
-    { mnuTools_divide Menu
-      Text = ("Divide")
-    }
-    { mnuTools_fillet Menu
-      Text = ("Fillet")
-    }
-    { mnuTools_chamfer Menu
-      Text = ("Chamfer")
-    }
-    { Menu15 Menu
-    }
-    { mnuTools_ Menu
-      Action = "cadArray"
-      Text = ("Array rectangular")
-    }
-    { mnuTools_array_polar Menu
-      Text = ("Array polar")
-    }
-    { mnuTools_offset Menu
-      Text = ("Offset")
-    }
-    { Menu16 Menu
-    }
-    { mnuTools_explode Menu
-      Text = ("Explode")
-    }
-  }
-  { mnuBlocks Menu
-    Text = ("Blocks")
-    { mnuBlocks_database Menu
-      Text = ("Blocks database")
-    }
-    { mnuBlocks_insert Menu
-      Text = ("Insert")
-    }
-    { mnuBlocks_make Menu
-      Text = ("Make a block")
-    }
-    { Menu22 Menu
-      Text = ("Menu22")
-    }
-    { Menu23 Menu
-      Text = ("Menu23")
-    }
-  }
-  { mnuWindow Menu
-    Text = ("Window")
-    { Menu25 Menu
-      Text = ("Menu25")
-    }
-    { Menu26 Menu
-      Text = ("Menu26")
-    }
-    { Menu27 Menu
-      Text = ("Menu27")
-    }
-    { Menu28 Menu
-      Text = ("Menu28")
-    }
-    { Menu29 Menu
-      Text = ("Menu29")
-    }
-    { Menu30 Menu
-      Text = ("Menu30")
-    }
-    { Menu31 Menu
-      Text = ("Menu31")
-    }
-    { Menu32 Menu
-      Text = ("Menu32")
-    }
-  }
-  { HPanel1 HPanel
-    MoveScaled(0,0,114,4)
+  { pnlToolbarTop HBox
+    MoveScaled(0,0,143,4)
     AutoResize = True
     Spacing = True
     Padding = 1
-    { tb1 ToolButton
+    { tb2 ToolButton
       MoveScaled(0,0,4,4)
+      NoTabFocus = True
       Action = "file_new"
       Picture = Picture["icon:/32/new"]
     }
-    { tb2 ToolButton
-      MoveScaled(4,0,4,4)
+    { MenuButton1 MenuButton
+      MoveScaled(4,0,8,4)
       Action = "file_open"
       Picture = Picture["icon:/32/open"]
     }
-    { tb3 ToolButton
-      MoveScaled(8,0,4,4)
+    { tb4 ToolButton
+      MoveScaled(12,0,4,4)
       Action = "file_save"
       Picture = Picture["icon:/32/save"]
     }
-    { tb4 ToolButton
-      MoveScaled(12,0,4,4)
+    { tb5 ToolButton
+      MoveScaled(16,0,4,4)
       Action = "file_saveas"
       Picture = Picture["icon:/32/save-as"]
     }
-    { Separator3 Separator
-      MoveScaled(16,0,1,4)
-    }
-    { tb7 ToolButton
-      MoveScaled(17,0,4,4)
-      Action = "PDF_Export"
-      Picture = Picture["icon:/32/pdf"]
-    }
-    { tb5 ToolButton
-      MoveScaled(21,0,4,4)
-      Action = "Print"
-      Picture = Picture["icon:/32/print"]
+    { Separator1 Separator
+      MoveScaled(20,0,1,4)
     }
     { tb6 ToolButton
+      MoveScaled(21,0,4,4)
+      Action = "print"
+      Picture = Picture["icon:/32/print"]
+    }
+    { tb7 ToolButton
       MoveScaled(25,0,4,4)
-      Enabled = False
-      Picture = Picture["icon:/32/preview"]
+      Action = "exit"
+      Picture = Picture["icon:/32/quit"]
     }
-    { Separator1 Separator
-      MoveScaled(29,0,1,4)
+    { Separator3 Separator
+      MoveScaled(28,0,2,4)
     }
-    { tb12 ToolButton
-      MoveScaled(31,0,4,4)
-      Action = "Undo"
-      Picture = Picture["icon:/24/undo"]
+    { tb3 ToolButton
+      MoveScaled(30,0,4,4)
+      Action = "config"
+      Picture = Picture["icon:/32/options"]
     }
-    { tb11 ToolButton
-      MoveScaled(35,0,4,4)
-      Action = "ReDo"
-      Picture = Picture["icon:/24/redo"]
+    { Separator7 Separator
+      MoveScaled(34,0,1,4)
     }
-    { Separator5 Separator
-      MoveScaled(41,0,1,4)
-    }
-    { tb10 ToolButton
-      MoveScaled(42,0,4,4)
+    { tbnZoomW ToolButton
+      MoveScaled(36,0,4,4)
+      ToolTip = ("Zoom to a defined window")
       Action = "cadZoomW"
-      Text = ("W")
     }
-    { tb9 ToolButton
-      MoveScaled(46,0,4,4)
+    { tbnPan ToolButton
+      MoveScaled(42,0,4,4)
+      ToolTip = ("Pan drawing")
       Action = "cadPan"
-      Text = ("P")
     }
-    { tb8 ToolButton
-      MoveScaled(50,0,4,4)
+    { tbnZoomE ToolButton
+      MoveScaled(47,0,4,4)
+      ToolTip = ("Zoom to view all drawing")
       Action = "cadZoome"
-      Text = ("E")
     }
     { Separator4 Separator
-      MoveScaled(54,0,1,4)
+      MoveScaled(53,0,1,4)
     }
-    { !tbnMoveToThisLayer ToolButton
-      MoveScaled(56,0,4,4)
-      #Public = True
-      Text = ("M")
+    { tb1 ToolButton
+      MoveScaled(54,0,4,4)
+      Action = "undo"
+      Picture = Picture["icon:/32/undo"]
+    }
+    { tb11 ToolButton
+      MoveScaled(58,0,4,4)
+      Action = "redo"
+      Picture = Picture["icon:/32/redo"]
+    }
+    { Separator9 Separator
+      MoveScaled(63,1,1,4)
+    }
+    { tbtLayer ToolButton
+      MoveScaled(65,0,4,4)
+      ToolTip = ("Layer table")
+      Action = "cadlayers"
+      Picture = Picture["icon:/32/menu"]
+    }
+    { Separator2 Separator
+      MoveScaled(68,0,1,4)
     }
     { !grdLayers GridView
-      MoveScaled(60,0,9,4)
+      MoveScaled(69,0,9,4)
       #Public = True
       Grid = False
       ScrollBar = Scroll.None
       AutoResize = False
       Resizable = False
     }
-    { Separator2 Separator
-      MoveScaled(70,0,1,4)
-    }
     { !mbtColors MenuButton
-      MoveScaled(72,0,8,4)
+      MoveScaled(80,0,8,4)
       #Public = True
       Arrow = False
     }
+    { !tblLTypes ToolButtonList
+      MoveScaled(89,0,9,4)
+      #Public = True
+      Tracking = True
+    }
+    { Separator6 Separator
+      MoveScaled(101,0,1,4)
+    }
+    { !tblLineWt ToolButtonList
+      MoveScaled(99,0,8,4)
+      #Public = True
+    }
     { !cmbDimStyle ComboBox
-      MoveScaled(100,0,12,4)
+      MoveScaled(108,0,12,4)
       #Public = True
       Action = "dimstyle_change"
       ReadOnly = True
+    }
+    { Separator8 Separator
+      MoveScaled(119,0,1,4)
+    }
+    { Spring2 Spring
+      MoveScaled(121,2,5,1)
+    }
+    { ToolButton2 ToolButton
+      MoveScaled(132,0,4,4)
+      ToolTip = ("Buy me a cofee!!!")
+      Action = "cofee"
+      Picture = Picture["png/buymeacofee32.png"]
+    }
+    { ToolButton1 ToolButton
+      MoveScaled(136,0,4,4)
+      ToolTip = ("About this program")
+      Action = "about"
+      Picture = Picture["icon:/32/question"]
     }
   }
   { !Panel1 Panel
@@ -450,189 +157,401 @@
     Drop = True
     Expand = True
     Arrangement = Arrange.Horizontal
-    { !pnlToolbarLeft VPanel
-      MoveScaled(0,0,8,78)
+    { !Panel2 Panel
+      MoveScaled(8,0,72,62)
       #Public = True
-      { vpnDibujar VPanel
-        MoveScaled(0,0,9,32)
-        { tblLine ToolButton
-          MoveScaled(0,0,4,4)
-          Action = "cadline"
-        }
-        { tblArc ToolButton
-          MoveScaled(0,4,4,4)
-          Action = "cadArc"
-        }
-        { tbnleader ToolButton
-          MoveScaled(0,8,4,4)
-          Action = "cadleader"
-        }
-        { tbnlwpolyline ToolButton
-          MoveScaled(0,12,4,4)
-          Action = "cadlwpolyline"
-        }
-        { tbnsolid ToolButton
-          MoveScaled(0,16,4,4)
-          Action = "cadsolid"
-        }
-        { tbnellipse ToolButton
-          MoveScaled(0,20,4,4)
-          Action = "cadellipse"
-        }
-        { tbnpolygon ToolButton
-          MoveScaled(0,24,4,4)
-          Action = "cadpolygon"
-        }
-        { tbnAttDef ToolButton
-          MoveScaled(0,28,4,4)
-          Action = "cadAttDef"
-        }
-        { tblCircle ToolButton
-          MoveScaled(4,0,4,4)
-          Action = "cadcircle"
-        }
-        { tbntext ToolButton
-          MoveScaled(4,4,4,4)
-          Action = "cadtext"
-        }
-        { tbnspline ToolButton
-          MoveScaled(4,8,4,4)
-          Action = "cadspline"
-        }
-        { tbnPoint ToolButton
-          MoveScaled(4,12,4,4)
-          Action = "cadpoint"
-        }
-        { tbnRectangle ToolButton
-          MoveScaled(4,16,4,4)
-          Action = "cadRectangle"
-        }
-        { tbnarc ToolButton
-          MoveScaled(4,20,4,4)
-          Action = "cadarc"
-        }
-        { tbnMText ToolButton
-          MoveScaled(4,24,4,4)
-          Action = "cadMText"
-        }
-      }
-      { VPanel2 VPanel
-        MoveScaled(0,33,8,24)
-        { tbndimension_linear ToolButton
-          MoveScaled(0,0,4,4)
-          Action = "cadDimension_Linear"
-        }
-        { tbndimension_ang3pt ToolButton
-          MoveScaled(0,4,4,4)
-          Action = "caddimension_ang3pt"
-        }
-        { tbndimension_radius ToolButton
-          MoveScaled(0,8,4,4)
-          Action = "caddimension_radius"
-        }
-        { tbnArc_dimension ToolButton
-          MoveScaled(0,12,4,4)
-          Action = "cadArc_dimension"
-        }
-        { tbndimension_linear_vertical ToolButton
-          MoveScaled(0,16,4,4)
-          Action = "cadDimension_Linear&2"
-          Text = ("V")
-        }
-        { tbndimension_baseline ToolButton
-          MoveScaled(0,20,4,4)
-          Action = "cadDimension_linear&20"
-        }
-        { tbndimension_aligned ToolButton
-          MoveScaled(4,0,4,4)
-          Action = "caddimension_aligned"
-        }
-        { tbndimension_diameter ToolButton
-          MoveScaled(4,4,4,4)
-          Action = "caddimension_diameter"
-        }
-        { tbndimension_ordinate ToolButton
-          MoveScaled(4,8,4,4)
-          Action = "caddimension_ordinate"
-        }
-        { tbndimension_linear_horizontal ToolButton
-          MoveScaled(4,12,4,4)
-          Action = "cadDimension_Linear&1"
-          Text = ("H")
-        }
-        { tbndimension_continue ToolButton
-          MoveScaled(4,16,4,4)
-          Action = "cadDimension_linear&10"
-        }
-        { tbndimension_continue2 ToolButton
-          MoveScaled(4,20,4,4)
-        }
-      }
-      { VPanel3 VPanel
-        MoveScaled(0,60,8,22)
-        { tbnBlock ToolButton
-          MoveScaled(0,0,4,4)
-          ToolTip = ("Block")
-          Text = ("Bl")
-        }
-        { ToolButton13 ToolButton
-          MoveScaled(0,4,4,4)
-        }
-        { ToolButton14 ToolButton
-          MoveScaled(0,8,4,4)
-        }
-        { ToolButton15 ToolButton
-          MoveScaled(0,12,4,4)
-        }
-        { tbnBlocks ToolButton
-          MoveScaled(4,0,4,4)
-          Background = Color.SelectedBackground
-          Action = "cadblocks"
-        }
-        { ToolButton17 ToolButton
-          MoveScaled(4,4,4,4)
-          Foreground = &H00FF00&
-          Action = "cadblocks"
-        }
-        { tbnslab4p ToolButton
-          MoveScaled(4,8,4,4)
-          Action = "cadslab"
-          Text = ("S")
-        }
-        { tbnHatch ToolButton
-          MoveScaled(4,12,4,4)
-          Action = "cadhatch"
-        }
-      }
-    }
-    { Panel2 Panel
-      MoveScaled(23,0,57,62)
-      Background = Color.Cyan
       Expand = True
       Arrangement = Arrange.Horizontal
-      { !TabPanel1 TabPanel
-        MoveScaled(1,1,52,57)
+      { !tabDrawings TabPanel
+        MoveScaled(4,1,50,57)
         #Public = True
-        Count = 3
+        Expand = True
+        Arrangement = Arrange.Horizontal
+        Count = 5
         Index = 0
-        Text = ("Tab 2")
+        Text = ("Console")
         { !txtDebug TextArea
-          MoveScaled(4,5,46,39)
+          MoveScaled(0,0,46,39)
           #Public = True
           Expand = True
         }
         Index = 1
-        Text = ("Tab 1")
+        Text = ("Project")
+        { !vpnDibujar2 VPanel
+          MoveScaled(0,0,4,40)
+          #Public = True
+          { tblLine2 ToolButton
+            MoveScaled(0,0,4,4)
+            Action = "cadline"
+          }
+          { tblArc2 ToolButton
+            MoveScaled(0,4,4,4)
+            Action = "cadArc"
+          }
+          { tbnleader2 ToolButton
+            MoveScaled(0,8,4,4)
+            Action = "cadleader"
+          }
+          { tbnlwpolyline2 ToolButton
+            MoveScaled(0,12,4,4)
+            Action = "cadlwpolyline"
+          }
+          { tbnsolid2 ToolButton
+            MoveScaled(0,16,4,4)
+            Action = "cadsolid"
+          }
+          { tbnellipse2 ToolButton
+            MoveScaled(0,20,4,4)
+            Action = "cadellipse"
+          }
+          { tbnpolygon2 ToolButton
+            MoveScaled(0,24,4,4)
+            Action = "cadpolygon"
+          }
+        }
+        { !Wizard1 Wizard
+          MoveScaled(0,0,85,51)
+          #Public = True
+          Expand = True
+          Count = 4
+          Index = 0
+          Text = ("Project options")
+          { PictureBox1 PictureBox
+            MoveScaled(1,1,35,39)
+            Background = Color.LightBackground
+          }
+          { txtName TextBox
+            MoveScaled(46,1,37,3)
+          }
+          { Label1 Label
+            MoveScaled(37,1,9,3)
+            Text = ("Name")
+          }
+          { Label2 Label
+            MoveScaled(36,4,9,3)
+            Text = ("Name")
+          }
+          { txtName2 TextBox
+            MoveScaled(46,4,37,3)
+          }
+          { Label3 Label
+            MoveScaled(36,7,9,3)
+            Text = ("Name")
+          }
+          { txtName3 TextBox
+            MoveScaled(46,7,37,3)
+          }
+          { Label4 Label
+            MoveScaled(36,10,9,3)
+            Text = ("Name")
+          }
+          { txtName4 TextBox
+            MoveScaled(46,10,37,3)
+          }
+          { Label5 Label
+            MoveScaled(36,13,9,3)
+            Text = ("Name")
+          }
+          { txtName5 TextBox
+            MoveScaled(46,13,37,3)
+          }
+          { Label6 Label
+            MoveScaled(36,16,9,3)
+            Text = ("Name")
+          }
+          { txtName6 TextBox
+            MoveScaled(46,16,37,3)
+          }
+          { Label7 Label
+            MoveScaled(36,19,9,3)
+            Text = ("Name")
+          }
+          { txtName7 TextBox
+            MoveScaled(46,19,37,3)
+          }
+          { Label8 Label
+            MoveScaled(36,22,9,3)
+            Text = ("Name")
+          }
+          { txtName8 TextBox
+            MoveScaled(46,22,37,3)
+          }
+          { Label9 Label
+            MoveScaled(36,25,9,3)
+            Text = ("Name")
+          }
+          { txtName9 TextBox
+            MoveScaled(46,25,37,3)
+          }
+          { Label10 Label
+            MoveScaled(36,28,9,3)
+            Text = ("Name")
+          }
+          { txtName10 TextBox
+            MoveScaled(46,28,37,3)
+          }
+          { Label11 Label
+            MoveScaled(36,31,9,3)
+            Text = ("Name")
+          }
+          { txtName11 TextBox
+            MoveScaled(46,31,37,3)
+          }
+          Index = 1
+          Text = ("Plants")
+          { PictureBox2 PictureBox
+            MoveScaled(1,1,35,39)
+            Background = Color.LightBackground
+          }
+          { Label12 Label
+            MoveScaled(38,2,37,4)
+            Text = ("Number of similar plants in building")
+          }
+          { Label13 Label
+            MoveScaled(41,7,16,4)
+            Text = ("Floors on plant #1")
+          }
+          { spnFloors1 SpinBox TotalFloors
+            Name = "spnFloors1"
+            MoveScaled(59,7,7,4)
+            Tag = "1"
+            MinValue = 1
+            Value = 1
+          }
+          { lblFloor2 Label
+            MoveScaled(41,12,16,4)
+            Text = ("Floors on plant #2")
+          }
+          { spnFloors2 SpinBox TotalFloors
+            Name = "spnFloors2"
+            MoveScaled(59,12,7,4)
+            Tag = "2"
+            MinValue = 1
+            MaxValue = 6
+            Value = 1
+          }
+          { lblFloor3 Label
+            MoveScaled(41,17,16,4)
+            Text = ("Floors on plant #3")
+          }
+          { spnFloors3 SpinBox TotalFloors
+            Name = "spnFloors3"
+            MoveScaled(59,17,7,4)
+            Tag = "3"
+            MinValue = 1
+            MaxValue = 6
+            Value = 1
+          }
+          { lblFloor4 Label
+            MoveScaled(41,22,16,4)
+            Text = ("Floors on plant #4")
+          }
+          { spnFloors4 SpinBox TotalFloors
+            Name = "spnFloors4"
+            MoveScaled(59,22,7,4)
+            Tag = "4"
+            MinValue = 1
+            MaxValue = 6
+            Value = 1
+          }
+          { lblFloor5 Label
+            MoveScaled(41,27,16,4)
+            Text = ("Floors on plant #5")
+          }
+          { spnFloors5 SpinBox TotalFloors
+            Name = "spnFloors5"
+            MoveScaled(59,27,7,4)
+            Tag = "5"
+            MinValue = 1
+            MaxValue = 6
+            Value = 1
+          }
+          { lblFloor6 Label
+            MoveScaled(41,32,16,4)
+            Text = ("Floors on plant #6")
+          }
+          { spnFloors6 SpinBox TotalFloors
+            Name = "spnFloors6"
+            MoveScaled(59,32,7,4)
+            Tag = "6"
+            MinValue = 1
+            MaxValue = 6
+            Value = 1
+          }
+          { Label14 Label
+            MoveScaled(67,7,7,4)
+            Text = ("Height")
+          }
+          { ValueBox1 ValueBox FloorsHeight
+            Name = "ValueBox1"
+            MoveScaled(74,8,7,3)
+            Tag = "1"
+            Text = ("3,1")
+            Alignment = Align.Right
+          }
+          { Label15 Label
+            MoveScaled(67,12,7,4)
+            Text = ("Height")
+          }
+          { ValueBox2 ValueBox FloorsHeight
+            Name = "ValueBox2"
+            MoveScaled(74,13,7,3)
+            Tag = "2"
+            Text = ("3,1")
+            Alignment = Align.Right
+          }
+          { Label16 Label
+            MoveScaled(67,17,7,4)
+            Text = ("Height")
+          }
+          { ValueBox3 ValueBox FloorsHeight
+            Name = "ValueBox3"
+            MoveScaled(74,18,7,3)
+            Tag = "3"
+            Text = ("3,1")
+            Alignment = Align.Right
+          }
+          { Label17 Label
+            MoveScaled(67,22,7,4)
+            Text = ("Height")
+          }
+          { ValueBox4 ValueBox FloorsHeight
+            Name = "ValueBox4"
+            MoveScaled(74,23,7,3)
+            Tag = "4"
+            Text = ("3,1")
+            Alignment = Align.Right
+          }
+          { Label18 Label
+            MoveScaled(67,27,7,4)
+            Text = ("Height")
+          }
+          { ValueBox5 ValueBox FloorsHeight
+            Name = "ValueBox5"
+            MoveScaled(74,28,7,3)
+            Tag = "5"
+            Text = ("3,1")
+            Alignment = Align.Right
+          }
+          { Label19 Label
+            MoveScaled(67,32,7,4)
+            Text = ("Height")
+          }
+          { ValueBox6 ValueBox FloorsHeight
+            Name = "ValueBox6"
+            MoveScaled(74,33,7,3)
+            Tag = "6"
+            Text = ("3,1")
+            Alignment = Align.Right
+          }
+          { spnPlants SpinBox
+            MoveScaled(76,2,7,4)
+            MinValue = 1
+            MaxValue = 6
+            Value = 1
+          }
+          Index = 2
+          Text = ("Loads")
+          { PictureBox3 PictureBox
+            MoveScaled(1,1,35,39)
+            Background = Color.LightBackground
+          }
+          { chkSelfLoads CheckBox
+            MoveScaled(39,2,44,3)
+            Text = ("Add gravitational structure self load ")
+            Value = CheckBox.True
+          }
+          { ValueBox7 ValueBox
+            MoveScaled(64,6,11,3)
+            Alignment = Align.Right
+          }
+          { Label20 Label
+            MoveScaled(40,6,24,3)
+            Text = ("Permanent loads on slabs")
+          }
+          { lblUnitLoads Label
+            MoveScaled(76,6,8,3)
+            Text = ("kgf/m2")
+          }
+          { lblUnitLoads2 Label
+            MoveScaled(76,10,8,3)
+            Text = ("kgf/m2")
+          }
+          { ValueBox8 ValueBox
+            MoveScaled(64,10,11,3)
+            Alignment = Align.Right
+          }
+          { Label21 Label
+            MoveScaled(40,10,24,3)
+            Text = ("Permanent load on beams")
+          }
+          { lblUnitLoads3 Label
+            MoveScaled(76,14,8,3)
+            Text = ("kgf/m2")
+          }
+          { ValueBox9 ValueBox
+            MoveScaled(64,14,11,3)
+            Alignment = Align.Right
+          }
+          { Label22 Label
+            MoveScaled(40,14,24,3)
+            Text = ("Permanent loads on slabs")
+          }
+          Index = 3
+          Text = ("Mesh generation")
+          { PictureBox4 PictureBox
+            MoveScaled(1,1,35,39)
+            Background = Color.LightBackground
+          }
+          Index = 0
+        }
+        Index = 2
+        Text = ("Model")
+        { vpnDibujar VPanel
+          MoveScaled(3,9,4,34)
+          { tbnSlab ToolButton
+            MoveScaled(0,0,4,4)
+            Action = "cadSlab"
+          }
+          { tblArc ToolButton
+            MoveScaled(0,4,4,4)
+            Action = "cadArc"
+          }
+          { tbnleader ToolButton
+            MoveScaled(0,8,4,4)
+            Action = "cadleader"
+          }
+          { tbnlwpolyline ToolButton
+            MoveScaled(0,12,4,4)
+            Action = "cadlwpolyline"
+          }
+          { tbnsolid ToolButton
+            MoveScaled(0,16,4,4)
+            Action = "cadsolid"
+          }
+          { tbnellipse ToolButton
+            MoveScaled(0,20,4,4)
+            Action = "cadellipse"
+          }
+          { tbnpolygon ToolButton
+            MoveScaled(0,24,4,4)
+            Action = "cadpolygon"
+          }
+        }
         { TabStrip1 TabStrip
-          MoveScaled(0,0,45,48)
+          MoveScaled(9,8,28,27)
+          Expand = True
+          Arrangement = Arrange.Fill
           Count = 3
           Orientation = Align.Right
           Index = 0
           Text = ("Tab 1")
           { Panel7 Panel
-            MoveScaled(0,0,37.875,33.875)
+            MoveScaled(1,4,31,27)
+            Expand = True
+            Arrangement = Arrange.Fill
             { !GLArea1 GLArea
-              MoveScaled(8,7,37,33)
+              MoveScaled(4,6,16,10)
               #Public = True
               Background = Color.Black
               Tracking = True
@@ -647,8 +566,80 @@
           Text = ("Tab 3")
           Index = 0
         }
-        Index = 2
-        Text = ("Tab 3")
+        Index = 3
+        Text = ("Mesh")
+        { vpnDibujar3 VPanel
+          MoveScaled(0,0,4,40)
+          { tblLine3 ToolButton
+            MoveScaled(0,0,4,4)
+            Action = "cadline"
+          }
+          { tblArc3 ToolButton
+            MoveScaled(0,4,4,4)
+            Action = "cadArc"
+          }
+          { tbnleader3 ToolButton
+            MoveScaled(0,8,4,4)
+            Action = "cadleader"
+          }
+          { tbnlwpolyline3 ToolButton
+            MoveScaled(0,12,4,4)
+            Action = "cadlwpolyline"
+          }
+          { tbnsolid3 ToolButton
+            MoveScaled(0,16,4,4)
+            Action = "cadsolid"
+          }
+          { tbnellipse3 ToolButton
+            MoveScaled(0,20,4,4)
+            Action = "cadellipse"
+          }
+          { tbnpolygon3 ToolButton
+            MoveScaled(0,24,4,4)
+            Action = "cadpolygon"
+          }
+        }
+        { GLAMesh GLArea
+          MoveScaled(8,2,38,38)
+          Expand = True
+        }
+        Index = 4
+        Text = ("Render")
+        { vpnDibujar4 VPanel
+          MoveScaled(0,0,4,40)
+          { tblLine4 ToolButton
+            MoveScaled(0,0,4,4)
+            Action = "cadline"
+          }
+          { tblArc4 ToolButton
+            MoveScaled(0,4,4,4)
+            Action = "cadArc"
+          }
+          { tbnleader4 ToolButton
+            MoveScaled(0,8,4,4)
+            Action = "cadleader"
+          }
+          { tbnlwpolyline4 ToolButton
+            MoveScaled(0,12,4,4)
+            Action = "cadlwpolyline"
+          }
+          { tbnsolid4 ToolButton
+            MoveScaled(0,16,4,4)
+            Action = "cadsolid"
+          }
+          { tbnellipse4 ToolButton
+            MoveScaled(0,20,4,4)
+            Action = "cadellipse"
+          }
+          { tbnpolygon4 ToolButton
+            MoveScaled(0,24,4,4)
+            Action = "cadpolygon"
+          }
+        }
+        { GLARender GLArea
+          MoveScaled(9,2,37,32)
+          Expand = True
+        }
         Index = 0
       }
     }
@@ -668,12 +659,6 @@
           Stretch = True
         }
       }
-    }
-    { tmrAutosave #Timer
-      #MoveScaled(23,2)
-    }
-    { Printer1 #Printer
-      #MoveScaled(25,51)
     }
   }
   { HBoxEstado HBox
@@ -749,277 +734,37 @@
 # Gambas Action File 3.0
 
 { Actions
-  { Action Edit_Copy
-    Text = "Copy"
-    Shortcut = ""
-  }
-  { Action Edit_Cut
-    Text = "Cut"
-    Shortcut = ""
-  }
-  { Action Edit_Paste
-    Text = "Paste"
-    Shortcut = ""
-  }
-  { Action Edit_Redo
-    Text = "Redo"
-    Shortcut = ""
-  }
-  { Action Edit_Undo
-    Text = "Undo"
-    Shortcut = ""
-  }
-  { Action File_Open
-    Text = "Open"
-    Shortcut = ""
-  }
-  { Action File_Quit
-    Text = "Quit"
-    Shortcut = ""
-  }
-  { Action File_Save
-    Text = "Save"
-    Shortcut = ""
-  }
-  { Action File_SaveAs
-    Text = "Save as"
-    Shortcut = ""
-  }
-  { Action File_new
-    Text = "New"
-    Shortcut = ""
-    Picture = "icon:/24/new"
-  }
-  { Action File_previous
-    Text = "Previous files"
-    Shortcut = ""
-  }
-  { Action PDF_Export
-    Text = ""
-    Picture = "icon:/32/pdf"
-  }
-  { Action Print
-    Text = ""
-    Picture = "icon:/32/print"
-  }
-  { Action ReDo
-    Text = ""
-    Picture = "icon:/24/redo"
-  }
-  { Action Regen
-    Text = "Regen"
-    Shortcut = ""
-  }
-  { Action Undo
-    Text = ""
-    Picture = "icon:/24/undo"
+  { Action about
+    Text = "About this program"
+    Picture = "icon:/32/question"
   }
   { Action cadArc
-    Text = "Arc"
-    Shortcut = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadArc_dimension
     Text = ""
     Picture = "$ToolButton"
-  }
-  { Action cadArray
-    Text = "Array rectangular"
-    Shortcut = ""
-  }
-  { Action cadAttDef
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadAttdef
-    Text = "Attdef"
-    Shortcut = ""
-  }
-  { Action cadAttrib
-    Text = "Attrib"
-    Shortcut = ""
-  }
-  { Action cadCircle
-    Text = "Circle"
-    Shortcut = ""
-  }
-  { Action cadCopy
-    Text = "Copy"
-    Shortcut = ""
-  }
-  { Action cadDIMENSION_ANG3PT
-    Text = "Angular"
-    Shortcut = ""
-  }
-  { Action cadDimension_Diameter
-    Text = "Diameter"
-    Shortcut = ""
-  }
-  { Action cadDimension_Linear
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_Linear&0
-    Text = "Horizontal"
-    Shortcut = ""
-  }
-  { Action cadDimension_Linear&1
-    Text = "H"
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_Linear&2
-    Text = "V"
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_Linear&90000
-    Text = "Vertical"
-    Shortcut = ""
-  }
-  { Action cadDimension_Radius
-    Text = "Radious"
-    Shortcut = ""
-  }
-  { Action cadDimension_aligned
-    Text = "Aligned"
-    Shortcut = ""
-  }
-  { Action cadDimension_linear&10
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_linear&20
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadDimension_ordinate
-    Text = "Ordinate"
-    Shortcut = ""
-  }
-  { Action cadEllipse
-    Text = "Ellipse"
-    Shortcut = ""
-  }
-  { Action cadHatch
-    Text = "Hatch"
-    Shortcut = ""
-  }
-  { Action cadLWPolyline
-    Text = "Polyline"
-    Shortcut = ""
-  }
-  { Action cadLarge_Radial_Dimension
-    Text = "Radial"
-    Shortcut = ""
-  }
-  { Action cadLeader
-    Text = "Leader"
-    Shortcut = ""
-  }
-  { Action cadLine
-    Text = "Line"
-    Shortcut = ""
-  }
-  { Action cadMText
-    Text = "MText"
-    Shortcut = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadMove
-    Text = "Move"
-    Shortcut = ""
   }
   { Action cadPan
-    Text = "P"
+    Text = "Pan drawing"
     Picture = "$ToolButton"
   }
-  { Action cadPoint
-    Text = "Point"
-    Shortcut = ""
-  }
-  { Action cadPolygon
-    Text = "Polygon"
-    Shortcut = ""
-  }
-  { Action cadRay
-    Text = "Ray"
-    Shortcut = ""
-  }
-  { Action cadRectangle
-    Text = "Rectangle"
-    Shortcut = ""
+  { Action cadSlab
+    Text = ""
     Picture = "$ToolButton"
-  }
-  { Action cadSPline
-    Text = "SPline"
-    Shortcut = ""
-  }
-  { Action cadScale
-    Text = "Scale"
-    Shortcut = ""
-  }
-  { Action cadSolid
-    Text = "Solid"
-    Shortcut = ""
-  }
-  { Action cadStretch
-    Text = "Stretch"
-    Shortcut = ""
-  }
-  { Action cadText
-    Text = "Text"
-    Shortcut = ""
-  }
-  { Action cadTrim
-    Text = "Trim"
-    Shortcut = ""
   }
   { Action cadZoomW
-    Text = "W"
+    Text = "Zoom to a defined window"
     Picture = "$ToolButton"
   }
   { Action cadZoome
-    Text = "E"
-    Picture = "$ToolButton"
-  }
-  { Action cadarc
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadblocks
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadcircle
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_aligned
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_ang3pt
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_diameter
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_ordinate
-    Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action caddimension_radius
-    Text = ""
+    Text = "Zoom to view all drawing"
     Picture = "$ToolButton"
   }
   { Action cadellipse
     Text = ""
     Picture = "$ToolButton"
   }
-  { Action cadhatch
-    Text = ""
-    Picture = "$ToolButton"
+  { Action cadlayers
+    Text = "Layer table"
+    Picture = "icon:/32/menu"
   }
   { Action cadleader
     Text = ""
@@ -1033,33 +778,29 @@
     Text = ""
     Picture = "$ToolButton"
   }
-  { Action cadpoint
-    Text = ""
-    Picture = "$ToolButton"
-  }
   { Action cadpolygon
     Text = ""
-    Picture = "$ToolButton"
-  }
-  { Action cadslab
-    Text = "S"
     Picture = "$ToolButton"
   }
   { Action cadsolid
     Text = ""
     Picture = "$ToolButton"
   }
-  { Action cadspline
-    Text = ""
-    Picture = "$ToolButton"
+  { Action cofee
+    Text = "Buy me a cofee!!!"
+    Picture = "png/buymeacofee32.png"
   }
-  { Action cadtext
+  { Action config
     Text = ""
-    Picture = "$ToolButton"
+    Picture = "icon:/32/options"
   }
   { Action dimstyle_change
     Text = ""
     Picture = "$ComboBox"
+  }
+  { Action exit
+    Text = ""
+    Picture = "icon:/32/quit"
   }
   { Action file_new
     Text = ""
@@ -1076,5 +817,17 @@
   { Action file_saveas
     Text = ""
     Picture = "icon:/32/save-as"
+  }
+  { Action print
+    Text = ""
+    Picture = "icon:/32/print"
+  }
+  { Action redo
+    Text = ""
+    Picture = "icon:/32/redo"
+  }
+  { Action undo
+    Text = ""
+    Picture = "icon:/32/undo"
   }
 }

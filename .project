@@ -22,5 +22,6 @@ Authors="terco"
 TabSize=4
 Translate=1
 Language=en_US
+ModulePublic=1
 Vendor=trkSoft
 Packager=1

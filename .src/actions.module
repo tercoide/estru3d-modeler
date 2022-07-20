@@ -1,1 +1,233 @@
-../../GambasCAD/.src/actions.module
+' Gambas module file
+
+' Este modulo contiene las acciones que , desde ahora, saco de FMain
+
+Public r As Float
+Public NewDrawing As Drawing
+Public f As String
+Public fDxf As String
+Public fBak As String
+'public fMinimal As String = "./minimal/minimal-2010.dxf"
+Public fMinimal As String = "./minimal/minimal.dxf"
+Public fx As String[]
+Public fbas As String
+Public t As String
+Public iColor As Integer
+Public i As Integer
+Public imgCirculito As Image
+Public clsJob As String
+' Public d As Drawing
+Public sActionParams As String[]
+
+Public Sub FileNew()
+
+    NewDrawing = fmain.NewTabForDrawing("< new >")
+    gcd.Drawing = NewDrawing
+    gcd.Drawings.Add(NewDrawing)
+    ' fmain.tabDrawings.Count += 1
+    ' fmain.tabDrawings.Text = ("< new >")
+    gcd.Drawing.FileName = main.dirTemplates &/ "drawing1.dxf"
+    dxf.LoadFile(fMinimal, gcd.Drawing,,,,, True)
+    gcd.Regen()
+    Try gcd.Drawing.HandSeed = Val("&H" & gcd.Drawing.oHeader.HandSeed)
+
+    fmain.UpdateLayersCombo
+    fmain.UpdateLineWtCombo
+    fmain.UpdateLineTypeCombo
+    fmain.UpdatDimTypeTypeCombo
+    fmain.Text = f
+    gcd.DrawingReady = True
+
+    ' this is what we are doing now
+    gcd.clsJob = cadSelection
+    gcd.clsJob.start()
+    gcd.clsJobPrevious = cadSelection
+    gcd.clsJobPreZoom = cadSelection
+    gcd.clsJobPreviousParam = 0
+
+    'fmain.FillWindowMenu
+
+End
+
+Public Sub FileSave(Optional sFile As String = "")
+
+    If sFile = "" Then ' pregunto
+
+        Dialog.Title = ("File Name")
+
+        If main.convODA Or main.convLibreDWG Then
+            Dialog.Filter = ["*.dxf;*.dwg", "Drawings", "*.dxf", "DXF Drawing exchange 2010", "*.dwg", "DWG AutoCAD Drawing file 2010"]
+        Else
+
+            Dialog.Filter = ["*.dxf", "Drawings", "*.dxf", "DXF Drawing exchange 2010"]
+
+        End If
+        If Not Dialog.SaveFile() Then Return
+
+        sFile = Dialog.Path
+
+    End If
+
+End
+
+Public Sub FileOpen(Optional sFile As String = "")
+
+    If sFile = "" Then
+
+        Dialog.Title = ("Select File")
+
+        If main.convODA Or main.convLibreDWG Then
+            Dialog.Filter = ["*.dxf;*.dwg", "Drawings", "*.dxf", "DXF Drawing exchange", "*.dwg", "DWG AutoCAD Drawing file"]
+        Else
+
+            Dialog.Filter = ["*.dxf", "Drawings", "*.dxf", "DXF Drawing exchange"]
+
+        End If
+        Dialog.Path = Config.FilesLastPath
+        Dialog.OpenFile(False)
+        f = Dialog.Path
+    Else
+
+        f = sfile ' "/home/martin/GAUCHO-TESTING-V2000-online converter.dxf"
+    End If
+
+    gcd.debugInfo("Opening " & f,,, True)
+
+    If Exist(f) Then
+        If Stat(f).Type = gb.File Then
+            Select Lower(File.Ext(f))
+                Case "dwg"
+
+                    Inc Application.Busy
+                    If main.convODA Then
+                        fDxf = gcd.ODA_DWGtoDXF(f)
+                    Else If main.convLibreDWG Then
+                        fDxf = gcd.LibreDWGtoDXF(f)
+                    End If
+                    Dec Application.Busy
+
+                    If fDxf = "" Then
+                        Message(("Can't open file: Error On conversion"))
+
+                        Return
+                    Endif
+
+                    GoSub LoadDXF
+                Case "dxf"
+                    fDxf = f
+                    GoSub LoadDXF
+
+            End Select
+        Endif
+
+        'main.FillWindowMenu
+        ' fmain.tabDrawings.Count += 1
+        ' fmain.tabDrawings.Text = Left(f, 12)
+
+        gcd.debugInfo("Showing drawing",,, True)
+        gcd.DrawingReady = True
+        ' this is what we are doing now
+        gcd.clsJob = cadSelection
+        gcd.clsJob.start()
+        gcd.clsJobPrevious = cadSelection
+        gcd.clsJobPreZoom = cadSelection
+        gcd.clsJobPreviousParam = 0
+
+        fmain.AddFilesOpen(f)
+
+        gcd.redraw
+
+    Else
+        gcd.debugInfo("File not found",,, True)
+        Me.FileNew
+
+    Endif
+
+    Config.FilesLastPath = Utils.PathFromFile(f)
+    Dec Application.Busy
+    Return
+
+LoadDXF:
+    Inc Application.Busy
+    NewDrawing = fmain.NewTabForDrawing(f)
+
+    ' esto es necesario porque muchas funciones usan gcd.Drawing
+
+    dxf.LoadFile(fMinimal, NewDrawing)
+
+    If dxf.LoadFile(fDxf, NewDrawing, False, False, False,, True) Then
+        Message.Error(("There was an error opening the file"))
+        NewDrawing = Null
+        gcd.Drawing = gcd.Drawings.Last
+        Return
+    Endif
+
+    gcd.Drawing = NewDrawing
+    gcd.Drawings.Add(NewDrawing)
+
+    gcd.Drawing.FileName = f
+    gcd.Drawing.RequiresFileRename = False
+
+    Try gcd.Drawing.HandSeed = Val("&H" & gcd.Drawing.oHeader.HandSeed)
+
+    fmain.UpdateLayersCombo
+    fmain.UpdateLineWtCombo
+    fmain.UpdateLineTypeCombo
+    fmain.UpdatDimTypeTypeCombo
+    gcd.Regen()
+    cadZoomE.Start()                                ' por ahora mostramos el dibujo centrado, hasta q leamos el estado anterior
+
+    fmain.Text = f
+
+    Return
+
+End
+
+Public Sub ExitProgram()
+
+    Dim d As Drawing
+    Dim e As Entity
+    Dim L As Layer
+
+    For Each d In gcd.Drawings
+
+        For Each e In d.oEntities
+            e.Polygon.Clear
+            e.P.Clear
+            e.Psel.Clear
+            e.PolyLine.Clear
+            e.PoiPoints.Clear
+            e.StringData.Clear
+            e.fParam.Clear
+            e.iParam.Clear
+            gcd.CCC[e.gender] = Null
+            e.PoiType.Clear
+            gl.DeleteLists(e.glDrwList, 1)
+            gl.DeleteLists(e.glDrwListSel, 1)
+            gl.DeleteLists(e.glDrwListPOI, 1)
+        Next
+        d.oEntities.Clear
+        d.oBlocks.Clear
+        d.handles.Clear
+        For Each L In d.oLayers
+            L.Entities.Clear
+        Next
+        d.oLayers.Clear
+        d.oLTYpes.Clear
+        d.oVisibleEntities.Clear
+        d.otextStyles.Clear
+        d.odimStyles.Clear
+
+    Next
+
+    Utils.SaveClass(Config, Config.ConfigFile)
+
+    main.MyLog.Close()
+
+    For Each w As Window In Windows
+        Try w.Close()
+    Next
+
+    Quit
+
+End
